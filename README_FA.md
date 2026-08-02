@@ -33,12 +33,28 @@
 
 ## 🚀 شروع سریع
 
-### نصب
-این خط را به فایل `build.gradle.kts` خود اضافه کنید:
+### نصب با JitPack
+برای استفاده از EasifyAndroid از طریق JitPack، باید مخزن و وابستگی را در تنظیمات Gradle پروژه‌تان اضافه کنید.
+
+#### مرحله ۱: افزودن JitPack به repositories
+در فایل `settings.gradle.kts`، JitPack را در انتهای بلوک repositories اضافه کنید:
+
+```kotlin
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+```
+
+#### مرحله ۲: افزودن وابستگی
+در فایل `build.gradle.kts` ماژول اپ خود:
 
 ```kotlin
 dependencies {
-    implementation("ir.amirhesambandegan:easify-android:1.0.0")
+    implementation("com.github.ahbandegan:Easify-Android:latest")
 }
 ```
 
