@@ -36,10 +36,11 @@
 ## 🚀 Quick Start
 
 ### Installation with JitPack
-To use EasifyAndroid from JitPack, add the repository and dependency in your Gradle setup.
 
-#### Step 1: Add JitPack to your repositories
-In your `settings.gradle.kts`, add JitPack at the end of the repositories block:
+To get EasifyAndroid into your build, follow these steps:
+
+#### Step 1: Add the JitPack repository
+Add it to your `settings.gradle.kts` at the end of the `repositories` block:
 
 ```kotlin
 dependencyResolutionManagement {
@@ -52,11 +53,11 @@ dependencyResolutionManagement {
 ```
 
 #### Step 2: Add the dependency
-In your app module `build.gradle.kts`:
+Add the following to your app-level `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.github.ahbandegan:Easify-Android:Tag")
+    implementation("com.github.ahbandegan:Easify-Android:1.0.1")
 }
 ```
 
