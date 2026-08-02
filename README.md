@@ -61,11 +61,38 @@ Button(onClick = { bt.askAndScan() }) {
 ---
 
 ## 📖 Detailed Documentation
-Each module contains its own dedicated `README.md` with deep-dives and code samples:
-- [Network Docs](./app/src/main/java/ir/amirhesambandegan/easify_network/README.md)
-- [Security Docs](./app/src/main/java/ir/amirhesambandegan/easify_security/README.md)
-- [Persian Kit Docs](./app/src/main/java/ir/amirhesambandegan/easify_persian/README.md)
-- ... and more in the source folders.
+
+Explore each module in depth with detailed API references and code examples:
+
+### Core Modules
+- [**Network**](./app/src/main/java/ir/amirhesambandegan/easify_network/README.md): Safe Ktor requests and file uploads.
+- [**Security**](./app/src/main/java/ir/amirhesambandegan/easify_security/README.md): Encryption and Screen Shield.
+- [**Permissions**](./app/src/main/java/ir/amirhesambandegan/easify_permission/README.md): Automatic Compose permissions.
+- [**Biometric**](./app/src/main/java/ir/amirhesambandegan/easify_biometric/README.md): Fingerprint/Face ID made simple.
+
+### Localization (Iran)
+- [**Persian Kit**](./app/src/main/java/ir/amirhesambandegan/easify_persian/README.md): Jalali date, digits, and currency text.
+- [**Fintech**](./app/src/main/java/ir/amirhesambandegan/easify_fintech/README.md): National ID, Bank Cards, and SHEBA.
+
+### Hardware & OS
+- [**Bluetooth**](./app/src/main/java/ir/amirhesambandegan/easify_bluetooth/README.md): Easy BLE scanning.
+- [**Sensors**](./app/src/main/java/ir/amirhesambandegan/easify_sensor/README.md): Accelerometer, Proximity, etc.
+- [**Location**](./app/src/main/java/ir/amirhesambandegan/easify_location/README.md): Live coordinates tracking.
+
+### UI & UX
+- [**UI Modifiers**](./app/src/main/java/ir/amirhesambandegan/easify_ui/README.md): Bounce, Shimmer, Spacers.
+- [**Form State**](./app/src/main/java/ir/amirhesambandegan/easify_form/README.md): Reactive form management.
+- [**Haptics**](./app/src/main/java/ir/amirhesambandegan/easify_haptic/README.md): Tactile feedback.
+- [**Notifications**](./app/src/main/java/ir/amirhesambandegan/easify_notification/README.md): Simplified channels and alerts.
+
+### Utilities
+- [**Context & Intents**](./app/src/main/java/ir/amirhesambandegan/easify_context/README.md): Clipboard and system actions.
+- [**Storage**](./app/src/main/java/ir/amirhesambandegan/easify_storage/README.md): Secure Preferences DataStore.
+- [**File Pickers**](./app/src/main/java/ir/amirhesambandegan/easify_file/README.md): Visual media selection.
+- [**Lifecycle**](./app/src/main/java/ir/amirhesambandegan/easify_lifecycle/README.md): Compose-ready lifecycle effects.
+- [**Validation**](./app/src/main/java/ir/amirhesambandegan/easify_validation/README.md): Common regex collection.
+- [**Image Processing**](./app/src/main/java/ir/amirhesambandegan/easify_image/README.md): Resize and compress bitmaps.
+- [**Formatters**](./app/src/main/java/ir/amirhesambandegan/easify_format/README.md): Numbers and durations.
 
 ---
 
