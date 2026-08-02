@@ -1,0 +1,36 @@
+# Built objects
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# Artifacts directory
+.artifacts/
+
+# OS specific files
+Thumb.db
+desktop.ini
+
+# Android Studio
+*.iws
+.idea/
+/captures
+*.apk
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+
+# Log files
+*.log
