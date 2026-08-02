@@ -1,5 +1,7 @@
 # EasifyAndroid 🚀
 
+[![](https://jitpack.io/v/ahbandegan/Easify-Android.svg)](https://jitpack.io/#ahbandegan/Easify-Android)
+
 **EasifyAndroid** یک کتابخانه جامع و آماده استفاده برای اندروید است که با هدف حذف کدهای تکراری (Boilerplate) و ساده‌سازی وظایف پیچیده طراحی شده است. از سنسورهای واکنشی و بلوتوث گرفته تا ذخیره‌سازی امن و ابزارهای بومی‌سازی شده برای ایران، این کتابخانه یک API مدرن و تمیز برای هر توسعه‌دهنده اندرویدی فراهم می‌کند.
 
 ---
@@ -54,7 +56,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.github.ahbandegan:Easify-Android:latest")
+    implementation("com.github.ahbandegan:Easify-Android:Tag")
 }
 ```
 

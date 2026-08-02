@@ -1,5 +1,7 @@
 # EasifyAndroid 🚀
 
+[![](https://jitpack.io/v/ahbandegan/Easify-Android.svg)](https://jitpack.io/#ahbandegan/Easify-Android)
+
 **EasifyAndroid** is a comprehensive, production-ready Android library designed to eliminate boilerplate and simplify complex tasks. From reactive hardware sensors and Bluetooth to secure storage and localized Persian utilities, EasifyAndroid provides a clean, modern API for every Android developer.
 
 ---
@@ -54,7 +56,7 @@ In your app module `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.github.ahbandegan:Easify-Android:latest")
+    implementation("com.github.ahbandegan:Easify-Android:Tag")
 }
 ```
 
