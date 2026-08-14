@@ -1,6 +1,7 @@
 ﻿plugins {
     alias(libs.plugins.android.library)
     id("maven-publish")
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -16,6 +17,10 @@ android {
         singleVariant("release") {
             withSourcesJar()
         }
+    }
+
+    buildFeatures {
+        compose = true
     }
 
     compileOptions {
@@ -38,6 +43,10 @@ afterEvaluate {
 }
 
 dependencies {
+    api(platform(libs.androidx.compose.bom))
+    api(libs.androidx.compose.ui)
+    api(libs.androidx.compose.material3)
+    api(libs.androidx.compose.activity)
     api(libs.androidx.core.ktx)
     api(libs.kotlinx.coroutines.android)
     api(libs.kotlinx.coroutines.core)
