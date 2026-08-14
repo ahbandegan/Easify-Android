@@ -1,8 +1,8 @@
-﻿# EasifyAndroid ðŸš€
+# EasifyAndroid 🚀
 
 [![](https://jitpack.io/v/ahbandegan/Easify-Android.svg)](https://jitpack.io/#ahbandegan/Easify-Android)
 
-**English Documentation** | [Ù…Ø³ØªÙ†Ø¯Ø§Øª ÙØ§Ø±Ø³ÛŒ](./README-fa.md)
+**English Documentation** | [مستندات فارسی](./README-fa.md)
 
 **EasifyAndroid** is a comprehensive, production-ready modular Android library designed to eliminate boilerplate and simplify complex tasks. 
 
@@ -10,7 +10,7 @@ Since version 2.0.0, EasifyAndroid is **100% modular**. You no longer need to im
 
 ---
 
-## ðŸš€ Quick Start (JitPack)
+## 🚀 Quick Start (JitPack)
 
 ### 1. Add the JitPack repository
 Add it to your `settings.gradle.kts` at the end of the `repositories` block:
@@ -48,12 +48,12 @@ dependencies {
 
 ---
 
-## ðŸ“¦ Modules Guide
+## 📦 Modules Guide
 
 Below is the detailed guide and documentation for all 20 independent modules. Click to expand!
 
 <details>
-<summary><b>1. ðŸ” easify-security (Encryption & Screen Shield)</b></summary>
+<summary><b>1. 🔐 easify-security (Encryption & Screen Shield)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-security:2.0.0")`
 
@@ -71,7 +71,7 @@ val decrypted = EasifyCrypto.decrypt(encrypted)
 </details>
 
 <details>
-<summary><b>2. ðŸ›¡ï¸ easify-permission (Compose Permissions)</b></summary>
+<summary><b>2. 🛡️ easify-permission (Compose Permissions)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-permission:2.0.0")`
 
@@ -91,7 +91,7 @@ Button(onClick = { permissionLauncher.launch() }) {
 </details>
 
 <details>
-<summary><b>3. ðŸ‘† easify-biometric (Fingerprint/Face ID)</b></summary>
+<summary><b>3. 👆 easify-biometric (Fingerprint/Face ID)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-biometric:2.0.0")`
 
@@ -112,7 +112,7 @@ Button(onClick = { biometric.authenticate() }) {
 </details>
 
 <details>
-<summary><b>4. ðŸŒ easify-network (Ktor Wrapper & File Uploads)</b></summary>
+<summary><b>4. 🌐 easify-network (Ktor Wrapper & File Uploads)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-network:2.0.0")`
 
@@ -132,7 +132,7 @@ EasifyNetwork.uploadMultipart(
 </details>
 
 <details>
-<summary><b>5. ðŸ‡®ðŸ‡· easify-persian (Jalali Calendar & Digits)</b></summary>
+<summary><b>5. 🇮🇷 easify-persian (Jalali Calendar & Digits)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-persian:2.0.0")`
 
@@ -143,15 +143,15 @@ Jalali (Persian) calendar converter, Persian digits, and number-to-text (Currenc
 val jalali = Date().toJalaliString() // Output: 1403/05/24
 
 // Convert English numbers to Persian
-val text = "Price: 1500".toPersianDigits() // Output: Price: Û±ÛµÛ°Û°
+val text = "Price: 1500".toPersianDigits() // Output: Price: ۱۵۰۰
 
 // Number to Persian text
-val words = 1500000L.toPersianWords() // Output: ÛŒÚ© Ù…ÛŒÙ„ÛŒÙˆÙ† Ùˆ Ù¾Ø§Ù†ØµØ¯ Ù‡Ø²Ø§Ø±
+val words = 1500000L.toPersianWords() // Output: یک میلیون و پانصد هزار
 ```
 </details>
 
 <details>
-<summary><b>6. ðŸ’³ easify-fintech (Iran Banks & Validation)</b></summary>
+<summary><b>6. 💳 easify-fintech (Iran Banks & Validation)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-fintech:2.0.0")`
 
@@ -170,7 +170,7 @@ val isValidSheba = "IR123...".isValidSheba()
 </details>
 
 <details>
-<summary><b>7. ðŸ“³ easify-sensor (Hardware Sensors)</b></summary>
+<summary><b>7. 📳 easify-sensor (Hardware Sensors)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-sensor:2.0.0")`
 
@@ -186,7 +186,7 @@ if (isClose) { Text("Phone is near your ear!") }
 </details>
 
 <details>
-<summary><b>8. ðŸ”µ easify-bluetooth (BLE Scanner)</b></summary>
+<summary><b>8. 🔵 easify-bluetooth (BLE Scanner)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-bluetooth:2.0.0")`
 
@@ -203,7 +203,7 @@ Button(onClick = { btScanner.startScanning() }) {
 </details>
 
 <details>
-<summary><b>9. ðŸ“ easify-location (Live GPS)</b></summary>
+<summary><b>9. 📍 easify-location (Live GPS)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-location:2.0.0")`
 
@@ -219,7 +219,7 @@ locationState?.let { loc ->
 </details>
 
 <details>
-<summary><b>10. ðŸŽ¨ easify-ui (Compose Modifiers & Utils)</b></summary>
+<summary><b>10. 🎨 easify-ui (Compose Modifiers & Utils)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-ui:2.0.0")`
 
@@ -238,7 +238,7 @@ Column(modifier = Modifier.hideKeyboardOnTapOutside()) { ... }
 </details>
 
 <details>
-<summary><b>11. ðŸ“ easify-form (Form State Management)</b></summary>
+<summary><b>11. 📝 easify-form (Form State Management)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-form:2.0.0")`
 
@@ -259,7 +259,7 @@ Button(onClick = { if(form.validate()) { /* submit */ } }) { Text("Submit") }
 </details>
 
 <details>
-<summary><b>12. ðŸ“³ easify-haptic (Tactile Feedback)</b></summary>
+<summary><b>12. 📳 easify-haptic (Tactile Feedback)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-haptic:2.0.0")`
 
@@ -278,7 +278,7 @@ Button(onClick = {
 </details>
 
 <details>
-<summary><b>13. ðŸ”” easify-notification (Simple Alerts)</b></summary>
+<summary><b>13. 🔔 easify-notification (Simple Alerts)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-notification:2.0.0")`
 
@@ -295,7 +295,7 @@ EasifyNotification.show(
 </details>
 
 <details>
-<summary><b>14. ðŸ“‚ easify-file (Visual Pickers)</b></summary>
+<summary><b>14. 📂 easify-file (Visual Pickers)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-file:2.0.0")`
 
@@ -312,7 +312,7 @@ Button(onClick = { filePicker.launch() }) { Text("Pick Image") }
 </details>
 
 <details>
-<summary><b>15. ðŸ—„ï¸ easify-storage (Secure DataStore)</b></summary>
+<summary><b>15. 🗄️ easify-storage (Secure DataStore)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-storage:2.0.0")`
 
@@ -330,7 +330,7 @@ val token = storage.getSecure("auth_token")
 </details>
 
 <details>
-<summary><b>16. âš™ï¸ easify-context (Intents & System)</b></summary>
+<summary><b>16. ⚙️ easify-context (Intents & System)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-context:2.0.0")`
 
@@ -344,7 +344,7 @@ context.openAppSettings()
 </details>
 
 <details>
-<summary><b>17. ðŸ”„ easify-lifecycle (Compose Lifecycle)</b></summary>
+<summary><b>17. 🔄 easify-lifecycle (Compose Lifecycle)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-lifecycle:2.0.0")`
 
@@ -362,7 +362,7 @@ useLifecycleEvent { event ->
 </details>
 
 <details>
-<summary><b>18. âœ… easify-validation (Regex Checks)</b></summary>
+<summary><b>18. ✅ easify-validation (Regex Checks)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-validation:2.0.0")`
 
@@ -376,7 +376,7 @@ val passwordStrong = "Aa!123456".isStrongPassword()
 </details>
 
 <details>
-<summary><b>19. ðŸ–¼ï¸ easify-image (Bitmap Processing)</b></summary>
+<summary><b>19. 🖼️ easify-image (Bitmap Processing)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-image:2.0.0")`
 
@@ -391,7 +391,7 @@ val optimizedBitmap = originalBitmap.compress(
 </details>
 
 <details>
-<summary><b>20. ðŸ”¢ easify-format (String Formatters)</b></summary>
+<summary><b>20. 🔢 easify-format (String Formatters)</b></summary>
 
 **Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-format:2.0.0")`
 
@@ -405,9 +405,8 @@ val time = 3661000L.formatDuration()   // Output: "01:01:01"
 
 ---
 
-## ðŸ¤ Contribution
+## 🤝 Contribution
 Contributions are welcome! If you have ideas for new "Easify" modules, please open an issue or a pull request.
 
-## âš–ï¸ License
+## ⚖️ License
 MIT License. Free for personal and commercial use.
-
