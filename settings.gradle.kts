@@ -1,4 +1,4 @@
-pluginManagement {
+﻿pluginManagement {
     repositories {
         maven { url = uri("https://maven.myket.ir/") }
         google {
@@ -27,4 +27,27 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Easify-Android"
-include(":app")
+include(
+    ":easify-biometric",
+    ":easify-bluetooth",
+    ":easify-context",
+    ":easify-file",
+    ":easify-fintech",
+    ":easify-form",
+    ":easify-format",
+    ":easify-haptic",
+    ":easify-image",
+    ":easify-lifecycle",
+    ":easify-location",
+    ":easify-network",
+    ":easify-notification",
+    ":easify-permission",
+    ":easify-persian",
+    ":easify-security",
+    ":easify-sensor",
+    ":easify-storage",
+    ":easify-ui",
+    ":easify-validation"
+)
+include(":easify-android")
+

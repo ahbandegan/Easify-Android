@@ -1,45 +1,18 @@
-# EasifyAndroid 🚀
+﻿# EasifyAndroid ðŸš€
 
 [![](https://jitpack.io/v/ahbandegan/Easify-Android.svg)](https://jitpack.io/#ahbandegan/Easify-Android)
 
-**EasifyAndroid** is a comprehensive, production-ready Android library designed to eliminate boilerplate and simplify complex tasks. From reactive hardware sensors and Bluetooth to secure storage and localized Persian utilities, EasifyAndroid provides a clean, modern API for every Android developer.
+**English Documentation** | [Ù…Ø³ØªÙ†Ø¯Ø§Øª ÙØ§Ø±Ø³ÛŒ](./README-fa.md)
+
+**EasifyAndroid** is a comprehensive, production-ready modular Android library designed to eliminate boilerplate and simplify complex tasks. 
+
+Since version 2.0.0, EasifyAndroid is **100% modular**. You no longer need to import the entire library! You can pick and choose exactly which modules you need in your app.
 
 ---
 
-## 📦 Modules & Features
+## ðŸš€ Quick Start (JitPack)
 
-### 🔐 Security & Permissions
-- **Easify-Security**: Hardware-backed AES-GCM encryption and screen protection (screenshot/recording shield).
-- **Easify-Permission**: Automated, lifecycle-aware permission handling for Jetpack Compose.
-- **Easify-Biometric**: Plug-and-play biometric authentication launcher.
-
-### 🌐 Networking
-- **Easify-Network**: Fail-safe Ktor 3.x wrapper with `EasifyResult`, auto-token injection, and effortless multi-part file uploads with progress tracking.
-- **Connectivity-Observer**: Real-time internet monitoring with Kotlin Flow.
-
-### 🇮🇷 Persian Kit (Localization)
-- **Easify-Persian**: Jalali (Persian) calendar converter, Persian digits, and number-to-text (Currency) conversion.
-- **Easify-Fintech**: Iranian National ID validator, Bank Card identification (BINs), and SHEBA (IBAN) validation.
-
-### 📱 Hardware & OS
-- **Easify-Sensor**: Reactive, descriptive access to all hardware sensors (Accelerometer, Proximity, etc.).
-- **Easify-Bluetooth**: Modern BLE scanner and manager that handles Android 12+ permission complexity.
-- **Easify-Location**: One-line live location tracking with automatic permission management.
-
-### 🎨 UI & UX
-- **Easify-Modifiers**: iOS-style `.bounceClick()`, skeleton `.shimmer()`, and `.hideKeyboardOnTapOutside()`.
-- **Easify-Form**: Reactive form state management with built-in validation support.
-- **Easify-Haptic**: Semantic tactile feedback (Success/Error/Click) with a single command.
-
----
-
-## 🚀 Quick Start
-
-### Installation with JitPack
-
-To get EasifyAndroid into your build, follow these steps:
-
-#### Step 1: Add the JitPack repository
+### 1. Add the JitPack repository
 Add it to your `settings.gradle.kts` at the end of the `repositories` block:
 
 ```kotlin
@@ -52,73 +25,389 @@ dependencyResolutionManagement {
 }
 ```
 
-#### Step 2: Add the dependency
-Add the following to your app-level `build.gradle.kts`:
+### 2. Add dependencies
 
+#### Option A: Import everything at once
+If you want access to the entire suite of features, you can import the umbrella module:
 ```kotlin
 dependencies {
-    implementation("com.github.ahbandegan:Easify-Android:1.0.1")
+    implementation("com.github.ahbandegan.Easify-Android:easify-android:2.0.0")
 }
 ```
 
-### Example: Secure Data Storage
+#### Option B: A La Carte (Recommended)
+Each module is published independently to keep your app size small. Add only the ones you need to your app-level `build.gradle.kts`:
 ```kotlin
-val controller = DataStoreController(context)
-controller.saveSecure(PreferenceKeys.stringKey("token"), "secret_123")
-```
-
-### Example: Reactive Bluetooth Scanning
-```kotlin
-val bt = rememberBluetoothLauncher()
-val devices by bt.scannedDevices.collectAsState(emptyList())
-
-Button(onClick = { bt.askAndScan() }) {
-    Text("Find Devices")
+dependencies {
+    // Replace <module-name> with any of the modules below
+    implementation("com.github.ahbandegan.Easify-Android:<module-name>:2.0.0")
 }
 ```
 
----
-
-## 📖 Detailed Documentation
-
-Explore each module in depth with detailed API references and code examples:
-
-### Core Modules
-- [**Network**](./app/src/main/java/ir/amirhesambandegan/easify_network/README.md): Safe Ktor requests and file uploads.
-- [**Security**](./app/src/main/java/ir/amirhesambandegan/easify_security/README.md): Encryption and Screen Shield.
-- [**Permissions**](./app/src/main/java/ir/amirhesambandegan/easify_permission/README.md): Automatic Compose permissions.
-- [**Biometric**](./app/src/main/java/ir/amirhesambandegan/easify_biometric/README.md): Fingerprint/Face ID made simple.
-
-### Localization (Iran)
-- [**Persian Kit**](./app/src/main/java/ir/amirhesambandegan/easify_persian/README.md): Jalali date, digits, and currency text.
-- [**Fintech**](./app/src/main/java/ir/amirhesambandegan/easify_fintech/README.md): National ID, Bank Cards, and SHEBA.
-
-### Hardware & OS
-- [**Bluetooth**](./app/src/main/java/ir/amirhesambandegan/easify_bluetooth/README.md): Easy BLE scanning.
-- [**Sensors**](./app/src/main/java/ir/amirhesambandegan/easify_sensor/README.md): Accelerometer, Proximity, etc.
-- [**Location**](./app/src/main/java/ir/amirhesambandegan/easify_location/README.md): Live coordinates tracking.
-
-### UI & UX
-- [**UI Modifiers**](./app/src/main/java/ir/amirhesambandegan/easify_ui/README.md): Bounce, Shimmer, Spacers.
-- [**Form State**](./app/src/main/java/ir/amirhesambandegan/easify_form/README.md): Reactive form management.
-- [**Haptics**](./app/src/main/java/ir/amirhesambandegan/easify_haptic/README.md): Tactile feedback.
-- [**Notifications**](./app/src/main/java/ir/amirhesambandegan/easify_notification/README.md): Simplified channels and alerts.
-
-### Utilities
-- [**Context & Intents**](./app/src/main/java/ir/amirhesambandegan/easify_context/README.md): Clipboard and system actions.
-- [**Storage**](./app/src/main/java/ir/amirhesambandegan/easify_storage/README.md): Secure Preferences DataStore.
-- [**File Pickers**](./app/src/main/java/ir/amirhesambandegan/easify_file/README.md): Visual media selection.
-- [**Lifecycle**](./app/src/main/java/ir/amirhesambandegan/easify_lifecycle/README.md): Compose-ready lifecycle effects.
-- [**Validation**](./app/src/main/java/ir/amirhesambandegan/easify_validation/README.md): Common regex collection.
-- [**Image Processing**](./app/src/main/java/ir/amirhesambandegan/easify_image/README.md): Resize and compress bitmaps.
-- [**Formatters**](./app/src/main/java/ir/amirhesambandegan/easify_format/README.md): Numbers and durations.
+> **Note:** The source code is included with the JitPack release! When you `ctrl + click` on any Easify function in Android Studio, you will see the actual Kotlin source code instead of compiled `.class` files. 
 
 ---
 
-## 🤝 Contribution
+## ðŸ“¦ Modules Guide
+
+Below is the detailed guide and documentation for all 20 independent modules. Click to expand!
+
+<details>
+<summary><b>1. ðŸ” easify-security (Encryption & Screen Shield)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-security:2.0.0")`
+
+Provides Hardware-backed AES-GCM encryption and screen protection to prevent screenshots and screen recording.
+
+```kotlin
+// Prevent screenshots in this activity/composable
+val shield = rememberScreenShield()
+shield.enable()
+
+// Encrypt and decrypt strings easily
+val encrypted = EasifyCrypto.encrypt("my_secret_text")
+val decrypted = EasifyCrypto.decrypt(encrypted)
+```
+</details>
+
+<details>
+<summary><b>2. ðŸ›¡ï¸ easify-permission (Compose Permissions)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-permission:2.0.0")`
+
+Automated, lifecycle-aware permission handling for Jetpack Compose without the boilerplate.
+
+```kotlin
+val permissionLauncher = rememberEasifyPermission(
+    permission = Manifest.permission.CAMERA,
+    onGranted = { /* Camera ready */ },
+    onDenied = { /* Show rationale */ }
+)
+
+Button(onClick = { permissionLauncher.launch() }) {
+    Text("Request Camera")
+}
+```
+</details>
+
+<details>
+<summary><b>3. ðŸ‘† easify-biometric (Fingerprint/Face ID)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-biometric:2.0.0")`
+
+Plug-and-play biometric authentication launcher.
+
+```kotlin
+val biometric = rememberBiometricLauncher(
+    title = "Verify Identity",
+    subtitle = "Use fingerprint to continue",
+    onSuccess = { /* Login success */ },
+    onError = { error -> /* Handle error */ }
+)
+
+Button(onClick = { biometric.authenticate() }) {
+    Text("Login with Biometrics")
+}
+```
+</details>
+
+<details>
+<summary><b>4. ðŸŒ easify-network (Ktor Wrapper & File Uploads)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-network:2.0.0")`
+
+Fail-safe Ktor 3.x wrapper with `EasifyResult`, auto-token injection, and effortless multi-part file uploads.
+
+```kotlin
+// Simple GET request mapped to a Result class
+val result: EasifyResult<UserResponse> = EasifyNetwork.get("https://api.example.com/user")
+
+// Upload file with progress
+EasifyNetwork.uploadMultipart(
+    url = "https://api.example.com/upload",
+    file = myFile,
+    onProgress = { percent -> println("Upload: $percent%") }
+)
+```
+</details>
+
+<details>
+<summary><b>5. ðŸ‡®ðŸ‡· easify-persian (Jalali Calendar & Digits)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-persian:2.0.0")`
+
+Jalali (Persian) calendar converter, Persian digits, and number-to-text (Currency) conversion.
+
+```kotlin
+// Convert standard date to Jalali
+val jalali = Date().toJalaliString() // Output: 1403/05/24
+
+// Convert English numbers to Persian
+val text = "Price: 1500".toPersianDigits() // Output: Price: Û±ÛµÛ°Û°
+
+// Number to Persian text
+val words = 1500000L.toPersianWords() // Output: ÛŒÚ© Ù…ÛŒÙ„ÛŒÙˆÙ† Ùˆ Ù¾Ø§Ù†ØµØ¯ Ù‡Ø²Ø§Ø±
+```
+</details>
+
+<details>
+<summary><b>6. ðŸ’³ easify-fintech (Iran Banks & Validation)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-fintech:2.0.0")`
+
+Iranian National ID validator, Bank Card identification (BINs), and SHEBA (IBAN) validation.
+
+```kotlin
+// Validate Iranian National ID
+val isValid = "0012345678".isValidIranianNationalId()
+
+// Get Bank info from card number
+val bankName = BankCardUtils.getBankName("6037991234567890") // Output: Bank Melli
+
+// Validate SHEBA
+val isValidSheba = "IR123...".isValidSheba()
+```
+</details>
+
+<details>
+<summary><b>7. ðŸ“³ easify-sensor (Hardware Sensors)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-sensor:2.0.0")`
+
+Reactive, descriptive access to hardware sensors (Accelerometer, Proximity, etc.) as Compose State.
+
+```kotlin
+val accelerometer by rememberAccelerometerState()
+Text("X: ${accelerometer.x}, Y: ${accelerometer.y}, Z: ${accelerometer.z}")
+
+val isClose by rememberProximityState()
+if (isClose) { Text("Phone is near your ear!") }
+```
+</details>
+
+<details>
+<summary><b>8. ðŸ”µ easify-bluetooth (BLE Scanner)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-bluetooth:2.0.0")`
+
+Modern BLE scanner and manager that automatically handles Android 12+ permission complexities.
+
+```kotlin
+val btScanner = rememberBluetoothScanner()
+val devices by btScanner.devices.collectAsState(initial = emptyList())
+
+Button(onClick = { btScanner.startScanning() }) {
+    Text("Scan BLE Devices")
+}
+```
+</details>
+
+<details>
+<summary><b>9. ðŸ“ easify-location (Live GPS)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-location:2.0.0")`
+
+One-line live location tracking with automatic permission management.
+
+```kotlin
+val locationState by rememberLocationTracker()
+
+locationState?.let { loc ->
+    Text("Lat: ${loc.latitude}, Lng: ${loc.longitude}")
+}
+```
+</details>
+
+<details>
+<summary><b>10. ðŸŽ¨ easify-ui (Compose Modifiers & Utils)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-ui:2.0.0")`
+
+iOS-style bounce clicks, shimmer loading effects, and keyboard hiding utilities.
+
+```kotlin
+// iOS-style bounce click effect
+Card(modifier = Modifier.bounceClick { /* action */ }) { ... }
+
+// Shimmer loading effect
+Box(modifier = Modifier.size(100.dp).shimmer(isLoading = true))
+
+// Hide keyboard on outside tap
+Column(modifier = Modifier.hideKeyboardOnTapOutside()) { ... }
+```
+</details>
+
+<details>
+<summary><b>11. ðŸ“ easify-form (Form State Management)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-form:2.0.0")`
+
+Reactive form state management with built-in validation support.
+
+```kotlin
+val form = rememberEasifyForm()
+val emailState = form.textField(name = "email", validators = listOf(EmailValidator()))
+
+OutlinedTextField(
+    value = emailState.value,
+    onValueChange = emailState::onChange,
+    isError = emailState.hasError
+)
+
+Button(onClick = { if(form.validate()) { /* submit */ } }) { Text("Submit") }
+```
+</details>
+
+<details>
+<summary><b>12. ðŸ“³ easify-haptic (Tactile Feedback)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-haptic:2.0.0")`
+
+Semantic tactile feedback (Success/Error/Click) with a single command.
+
+```kotlin
+val haptic = LocalHapticFeedback.current
+
+Button(onClick = { 
+    // Triggers a distinct "success" vibration pattern
+    haptic.performEasifyHaptic(EasifyHapticType.SUCCESS) 
+}) {
+    Text("Complete Task")
+}
+```
+</details>
+
+<details>
+<summary><b>13. ðŸ”” easify-notification (Simple Alerts)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-notification:2.0.0")`
+
+Simplified Notification Channels and local push alerts.
+
+```kotlin
+EasifyNotification.show(
+    context = context,
+    title = "Download Complete",
+    message = "Your file has been downloaded successfully.",
+    channelId = "downloads"
+)
+```
+</details>
+
+<details>
+<summary><b>14. ðŸ“‚ easify-file (Visual Pickers)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-file:2.0.0")`
+
+Visual media selection for Images, Videos, and Files.
+
+```kotlin
+val filePicker = rememberEasifyFilePicker(
+    type = FileType.IMAGE,
+    onResult = { uri -> /* Image selected */ }
+)
+
+Button(onClick = { filePicker.launch() }) { Text("Pick Image") }
+```
+</details>
+
+<details>
+<summary><b>15. ðŸ—„ï¸ easify-storage (Secure DataStore)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-storage:2.0.0")`
+
+Combines Preferences DataStore with `easify-security` for a secure storage solution.
+
+```kotlin
+val storage = rememberEasifyStorage()
+
+// Saved encrypted automatically
+storage.saveSecure("auth_token", "jwt_abc123")
+
+// Retrieved and decrypted automatically
+val token = storage.getSecure("auth_token")
+```
+</details>
+
+<details>
+<summary><b>16. âš™ï¸ easify-context (Intents & System)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-context:2.0.0")`
+
+Utilities for Clipboard, Sharing, and System Settings.
+
+```kotlin
+context.copyToClipboard("Text to copy")
+context.shareText("Check out this app!")
+context.openAppSettings()
+```
+</details>
+
+<details>
+<summary><b>17. ðŸ”„ easify-lifecycle (Compose Lifecycle)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-lifecycle:2.0.0")`
+
+Compose-ready lifecycle effect wrappers.
+
+```kotlin
+useLifecycleEvent { event ->
+    when(event) {
+        Lifecycle.Event.ON_RESUME -> { /* App is active */ }
+        Lifecycle.Event.ON_PAUSE -> { /* App in background */ }
+        else -> {}
+    }
+}
+```
+</details>
+
+<details>
+<summary><b>18. âœ… easify-validation (Regex Checks)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-validation:2.0.0")`
+
+Common Regex patterns and string validation collection.
+
+```kotlin
+val emailValid = "test@test.com".isEmailValid()
+val phoneValid = "+989123456789".isPhoneNumberValid()
+val passwordStrong = "Aa!123456".isStrongPassword()
+```
+</details>
+
+<details>
+<summary><b>19. ðŸ–¼ï¸ easify-image (Bitmap Processing)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-image:2.0.0")`
+
+Resize and compress bitmaps easily before uploading.
+
+```kotlin
+val optimizedBitmap = originalBitmap.compress(
+    maxWidth = 1080,
+    quality = 80
+)
+```
+</details>
+
+<details>
+<summary><b>20. ðŸ”¢ easify-format (String Formatters)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-format:2.0.0")`
+
+Clean formatters for Numbers and Durations.
+
+```kotlin
+val price = 1500000.toCurrencyFormat() // Output: "1,500,000"
+val time = 3661000L.formatDuration()   // Output: "01:01:01"
+```
+</details>
+
+---
+
+## ðŸ¤ Contribution
 Contributions are welcome! If you have ideas for new "Easify" modules, please open an issue or a pull request.
 
----
-
-## ⚖️ License
+## âš–ï¸ License
 MIT License. Free for personal and commercial use.
+
