@@ -1,4 +1,4 @@
-﻿plugins {
+plugins {
     alias(libs.plugins.android.library)
     id("maven-publish")
     alias(libs.plugins.kotlin.compose)
@@ -55,6 +55,7 @@ dependencies {
     api(libs.ktor.client.cio)
     api(libs.ktor.client.content.negotiation)
     api(libs.ktor.serialization.kotlinx.json)
+    api(libs.ktor.client.logging)
     api(libs.kotlinx.serialization.json)
 }
 
