@@ -1,11 +1,11 @@
-﻿plugins {
+plugins {
     id("com.android.library")
     id("maven-publish")
 }
 
 android {
     namespace = "ir.amirhesambandegan.easify_android_umbrella"
-    compileSdk = 34
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 24

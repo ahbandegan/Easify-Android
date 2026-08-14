@@ -1,4 +1,4 @@
-﻿plugins {
+plugins {
     alias(libs.plugins.android.library)
     id("maven-publish")
 }
@@ -42,6 +42,7 @@ dependencies {
     api(libs.kotlinx.coroutines.android)
     api(libs.kotlinx.coroutines.core)
 
+    api(libs.androidx.appcompat)
 }
 
 
