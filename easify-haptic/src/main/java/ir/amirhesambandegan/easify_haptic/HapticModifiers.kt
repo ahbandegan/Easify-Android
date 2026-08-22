@@ -14,6 +14,10 @@ import androidx.compose.ui.platform.LocalContext
 
 /**
  * Replaces the standard clickable. Provides a light impact on down, and medium on up.
+ *
+ * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this modifier.
+ * @param onClick The callback to be invoked when the click action is completed.
+ * @return A [Modifier] with the applied haptic clickable behavior.
  */
 fun Modifier.hapticClickable(
     interactionSource: MutableInteractionSource? = null,
@@ -43,6 +47,8 @@ fun Modifier.hapticClickable(
 
 /**
  * Just adds tactile press indication without overriding the click behavior.
+ *
+ * @return A [Modifier] that triggers a light haptic impact on press.
  */
 fun Modifier.hapticPressIndicator(): Modifier = composed {
     val context = LocalContext.current

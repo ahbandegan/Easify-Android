@@ -2,6 +2,12 @@ package ir.amirhesambandegan.easify_format
 
 import java.util.Locale
 
+/**
+ * Converts a timestamp (in milliseconds) into a human-readable "time ago" format in Persian.
+ * E.g., "لحظاتی پیش" (just now), "دیروز" (yesterday), "۲ روز پیش" (2 days ago).
+ *
+ * @return A formatted string representing the time elapsed since the timestamp.
+ */
 fun Long.toTimeAgo(): String {
     val now = System.currentTimeMillis()
     if (this > now || this <= 0) return "لحظاتی پیش"
@@ -30,6 +36,12 @@ fun Long.toTimeAgo(): String {
     }
 }
 
+/**
+ * Converts a duration in seconds to a standard timer format string (HH:MM:SS or MM:SS).
+ *
+ * @return A formatted time string. If the duration is an hour or more, it uses "HH:MM:SS",
+ * otherwise it uses "MM:SS".
+ */
 fun Long.toTimerFormat(): String {
     val totalSeconds = this
     val hours = totalSeconds / 3600

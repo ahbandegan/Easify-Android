@@ -7,8 +7,17 @@ import android.os.Build
 import android.provider.Settings
 import java.io.File
 
+/**
+ * A utility object containing various security checks such as root detection,
+ * VPN status, and developer options verification.
+ */
 object EasifySecurityUtils {
 
+    /**
+     * Checks whether the device is rooted by looking for common su binaries and paths.
+     *
+     * @return `true` if evidence of rooting is found, `false` otherwise.
+     */
     fun isRooted(): Boolean {
         val paths = arrayOf(
             "/system/app/Superuser.apk",
@@ -24,6 +33,11 @@ object EasifySecurityUtils {
         return paths.any { File(it).exists() } || checkSuCommand()
     }
 
+    /**
+     * Attempts to execute the 'su' command to verify root access dynamically.
+     *
+     * @return `true` if the 'su' command is available and executable, `false` otherwise.
+     */
     private fun checkSuCommand(): Boolean {
         return try {
             val process = Runtime.getRuntime().exec(arrayOf("/system/xbin/which", "su"))
@@ -34,6 +48,12 @@ object EasifySecurityUtils {
         }
     }
 
+    /**
+     * Checks if a VPN connection is currently active on the device.
+     *
+     * @param context The application context used to access connectivity services.
+     * @return `true` if an active VPN transport is detected, `false` otherwise.
+     */
     fun isVpnActive(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -42,6 +62,12 @@ object EasifySecurityUtils {
         return caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
     }
 
+    /**
+     * Determines whether developer options are enabled on the device.
+     *
+     * @param context The application context used to query system settings.
+     * @return `true` if developer options are enabled, `false` otherwise.
+     */
     fun isDevOptionsEnabled(context: Context): Boolean {
         return Settings.Global.getInt(
             context.contentResolver,

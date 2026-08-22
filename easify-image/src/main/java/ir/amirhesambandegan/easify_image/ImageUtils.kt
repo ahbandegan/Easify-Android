@@ -15,6 +15,9 @@ object ImageUtils {
 
     /**
      * Safely decodes a [Uri] into a [Bitmap].
+     *
+     * @param context The [Context] used to access the content resolver.
+     * @return The decoded [Bitmap], or null if an error occurs.
      */
     fun Uri.toBitmap(context: Context): Bitmap? {
         return try {
@@ -31,6 +34,7 @@ object ImageUtils {
      *
      * @param quality Hint to the compressor, 0-100. 0 meaning compress for small size, 100 meaning compress for max quality.
      * @param format The format of the compressed image. Defaults to [Bitmap.CompressFormat.JPEG].
+     * @return A [ByteArray] containing the compressed image data.
      */
     fun Bitmap.compressToBytes(
         quality: Int = 80,
@@ -43,6 +47,10 @@ object ImageUtils {
 
     /**
      * Converts a [Bitmap] to a Base64 encoded string.
+     *
+     * @param quality Hint to the compressor, 0-100. Defaults to 80.
+     * @param format The format of the compressed image. Defaults to [Bitmap.CompressFormat.JPEG].
+     * @return The Base64 encoded string representation of the bitmap.
      */
     fun Bitmap.toBase64(
         quality: Int = 80,
@@ -55,8 +63,9 @@ object ImageUtils {
     /**
      * Resizes the [Bitmap] while maintaining its aspect ratio.
      *
-     * @param maxWidth The maximum allowed width.
-     * @param maxHeight The maximum allowed height.
+     * @param maxWidth The maximum allowed width in pixels.
+     * @param maxHeight The maximum allowed height in pixels.
+     * @return A new resized [Bitmap].
      */
     fun Bitmap.resize(maxWidth: Int, maxHeight: Int): Bitmap {
         val width = this.width

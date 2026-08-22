@@ -4,11 +4,16 @@ import android.location.Location
 import androidx.compose.runtime.*
 
 /**
- * Reactively checks if the user is inside a circular geofence.
- * @param currentLocation The live location flow or state.
- * @param centerLat Geofence center latitude.
- * @param centerLng Geofence center longitude.
+ * Reactively checks whether the user is inside a circular geofence boundary defined by coordinates and radius.
+ *
+ * Whenever [currentLocation], [centerLat], [centerLng], or [radiusMeters] changes, this composable recalculates
+ * the distance using [LocationMath.calculateDistance] and updates the returned [State].
+ *
+ * @param currentLocation The live [Location] or `null` if location is not yet available.
+ * @param centerLat Geofence center latitude in degrees.
+ * @param centerLng Geofence center longitude in degrees.
  * @param radiusMeters Geofence radius in meters.
+ * @return A [State] holding `true` if the [currentLocation] is within [radiusMeters] of the center coordinates, `false` otherwise.
  */
 @Composable
 fun rememberGeofenceState(

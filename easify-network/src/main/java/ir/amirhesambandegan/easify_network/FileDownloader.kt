@@ -9,7 +9,15 @@ import kotlinx.coroutines.flow.flow
 import java.io.File
 
 /**
- * Downloads a file and emits the progress (0 to 100).
+ * Downloads a remote file from the specified [url] and writes it to [destFile], emitting download progress.
+ *
+ * This function returns a cold [Flow] that emits integer progress values ranging from `0` to `100`.
+ * If an exception occurs during the download process, `-1` is emitted to signal an error state.
+ *
+ * @receiver The [HttpClient] instance used to execute the HTTP GET request.
+ * @param url The remote URL of the file to be downloaded.
+ * @param destFile The destination [File] on local storage where the downloaded bytes will be saved.
+ * @return A [Flow] emitting percentage progress values (`0` to `100`), or `-1` on error.
  */
 fun HttpClient.downloadFile(url: String, destFile: File): Flow<Int> = flow {
     try {

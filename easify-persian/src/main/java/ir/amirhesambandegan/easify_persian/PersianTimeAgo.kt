@@ -3,6 +3,8 @@ package ir.amirhesambandegan.easify_persian
 /**
  * Converts a time in milliseconds to a human-readable Persian "time ago" string.
  * Example: "۵ دقیقه پیش", "دیروز".
+ *
+ * @return A string representing the elapsed time in a friendly Persian format.
  */
 fun Long.toPersianTimeAgo(): String {
     val now = System.currentTimeMillis()

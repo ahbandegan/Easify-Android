@@ -1,10 +1,30 @@
 package ir.amirhesambandegan.easify_fintech
 
+/**
+ * Array of Persian words for numbers from 1 to 19.
+ */
 val ones = arrayOf("", "یک", "دو", "سه", "چهار", "پنج", "شش", "هفت", "هشت", "نه", "ده", "یازده", "دوازده", "سیزده", "چهارده", "پانزده", "شانزده", "هفده", "هجده", "نوزده")
+
+/**
+ * Array of Persian words for tens from 20 to 90.
+ */
 val tens = arrayOf("", "", "بیست", "سی", "چهل", "پنجاه", "شصت", "هفتاد", "هشتاد", "نود")
+
+/**
+ * Array of Persian words for hundreds from 100 to 900.
+ */
 val hundreds = arrayOf("", "صد", "دویست", "سیصد", "چهارصد", "پانصد", "ششصد", "هفتصد", "هشتصد", "نهصد")
+
+/**
+ * Array of Persian scale words (thousands, millions, etc.).
+ */
 val scales = arrayOf("", "هزار", "میلیون", "میلیارد", "تریلیون")
 
+/**
+ * Converts a `Long` number into its Persian word representation.
+ *
+ * @return The Persian text representing the number.
+ */
 fun Long.toPersianWords(): String {
     if (this == 0L) return "صفر"
     var num = this
@@ -24,6 +44,12 @@ fun Long.toPersianWords(): String {
     return parts.joinToString(" و ")
 }
 
+/**
+ * Converts a 3-digit chunk of a number into Persian words.
+ *
+ * @param number The 3-digit number chunk to convert.
+ * @return The Persian text representing the chunk.
+ */
 private fun convertChunk(number: Int): String {
     val parts = mutableListOf<String>()
     val h = number / 100
@@ -42,4 +68,9 @@ private fun convertChunk(number: Int): String {
     return parts.joinToString(" و ")
 }
 
+/**
+ * Attempts to parse the string as a `Long` and converts it into its Persian word representation.
+ *
+ * @return The Persian text representing the number, or an empty string if parsing fails.
+ */
 fun String.toPersianWords(): String = this.toLongOrNull()?.toPersianWords() ?: ""

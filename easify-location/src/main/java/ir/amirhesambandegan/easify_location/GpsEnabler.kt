@@ -17,12 +17,20 @@ import com.google.android.gms.location.LocationSettingsResponse
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.Task
 
+/**
+ * Utility to verify if device location services (GPS) are enabled and request the user to turn them on via Google Play Services dialog.
+ *
+ * @property context The Android [Context] used to obtain Google Play [LocationServices] settings client.
+ * @property launchResolution Callback invoked when a resolution intent must be launched (e.g. via [IntentSenderRequest]).
+ */
 class GpsEnabler(
     private val context: Context,
     private val launchResolution: (IntentSenderRequest) -> Unit
 ) {
     /**
-     * Checks if GPS is enabled. If not, it shows the Google Play Services dialog to turn it on.
+     * Checks if location settings are satisfied for high accuracy. If not, prompts the user with the system resolution dialog.
+     *
+     * @param onResult Callback invoked with `true` if GPS is already enabled, or `false` if settings resolution failed or was rejected.
      */
     fun requestGps(onResult: (Boolean) -> Unit = {}) {
         val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000).build()
@@ -51,6 +59,14 @@ class GpsEnabler(
     }
 }
 
+/**
+ * Creates and remembers a [GpsEnabler] instance within a Jetpack Compose environment.
+ *
+ * Uses [rememberLauncherForActivityResult] to handle the GPS resolution dialog result.
+ *
+ * @param onResult Callback invoked with `true` if the user enabled GPS, `false` otherwise.
+ * @return A remembered [GpsEnabler] instance configured for the calling composable.
+ */
 @Composable
 fun rememberGpsEnabler(onResult: (Boolean) -> Unit): GpsEnabler {
     val context = LocalContext.current

@@ -3,9 +3,18 @@ package ir.amirhesambandegan.easify_fintech
 import java.util.Calendar
 
 /**
- * Lightweight Shamsi (Jalali) Date Converter.
+ * Lightweight Shamsi (Jalali) Date representation.
+ *
+ * @property year The Shamsi year.
+ * @property month The Shamsi month.
+ * @property day The Shamsi day of the month.
  */
 class ShamsiDate(var year: Int, var month: Int, var day: Int) {
+    /**
+     * Converts the date to a formatted string (YYYY/MM/DD).
+     *
+     * @return The formatted Shamsi date string.
+     */
     override fun toString(): String {
         val m = if (month < 10) "0$month" else month.toString()
         val d = if (day < 10) "0$day" else day.toString()
@@ -13,6 +22,11 @@ class ShamsiDate(var year: Int, var month: Int, var day: Int) {
     }
 }
 
+/**
+ * Converts a Unix timestamp (in milliseconds) into a [ShamsiDate].
+ *
+ * @return The converted Shamsi date.
+ */
 fun Long.toShamsiDate(): ShamsiDate {
     val cal = Calendar.getInstance()
     cal.timeInMillis = this

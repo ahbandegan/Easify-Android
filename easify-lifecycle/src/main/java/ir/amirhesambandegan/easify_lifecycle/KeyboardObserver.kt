@@ -7,7 +7,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 
 /**
- * Tracks the visibility and height of the soft keyboard.
+ * A composable function that tracks the visibility and height of the soft keyboard.
+ *
+ * It uses an [android.view.ViewTreeObserver.OnGlobalLayoutListener] attached to the activity's
+ * decor view to monitor layout changes and calculates the keyboard's height by comparing the
+ * screen's height to the visible display frame.
+ *
+ * @return A [State] wrapping a [KeyboardInfo] object containing the current visibility status and height of the keyboard.
  */
 @Composable
 fun rememberKeyboardState(): State<KeyboardInfo> {
@@ -38,6 +44,12 @@ fun rememberKeyboardState(): State<KeyboardInfo> {
     return keyboardState
 }
 
+/**
+ * Data class representing the current state of the soft keyboard.
+ *
+ * @property isVisible `true` if the keyboard is considered visible, `false` otherwise.
+ * @property heightPx The height of the keyboard in pixels. It is `0` when the keyboard is not visible.
+ */
 data class KeyboardInfo(
     val isVisible: Boolean,
     val heightPx: Int

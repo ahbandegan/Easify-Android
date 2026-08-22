@@ -5,8 +5,19 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 
+/**
+ * Utility object for launching biometric authentication with a fallback to the device credential (PIN/Pattern/Password).
+ */
 object DeviceCredentialFallback {
 
+    /**
+     * Launches the biometric prompt, allowing the user to authenticate using strong biometrics or their device credential.
+     * 
+     * @param activity The [FragmentActivity] used to host the prompt.
+     * @param title The title displayed on the authentication prompt.
+     * @param subtitle The subtitle displayed on the authentication prompt.
+     * @param onResult Callback invoked with the result of the authentication attempt.
+     */
     fun launchWithFallback(
         activity: FragmentActivity,
         title: String,

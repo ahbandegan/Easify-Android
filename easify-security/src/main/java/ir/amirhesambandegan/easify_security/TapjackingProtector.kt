@@ -7,8 +7,11 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.viewinterop.AndroidView
 
 /**
- * Wraps Content inside an Android View that has filterTouchesWhenObscured = true.
- * This prevents Tapjacking attacks where another app draws over this window.
+ * Wraps [content] inside an Android [FrameLayout] that has `filterTouchesWhenObscured = true`.
+ * This prevents Tapjacking attacks where another app draws a deceptive window over this window
+ * to hijack touch events.
+ * 
+ * @param content The Composable content to be protected from tapjacking.
  */
 @Composable
 fun PreventTapjacking(content: @Composable () -> Unit) {

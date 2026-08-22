@@ -8,6 +8,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 
+/**
+ * A composable side-effect that triggers a callback when a specific [Lifecycle.Event] occurs.
+ *
+ * It attaches a [LifecycleEventObserver] to the [LocalLifecycleOwner] and executes the provided
+ * [onEvent] callback whenever the observed lifecycle event matches the given [event].
+ *
+ * @param event The [Lifecycle.Event] to listen for (e.g., [Lifecycle.Event.ON_CREATE], [Lifecycle.Event.ON_RESUME]).
+ * @param onEvent The callback to be invoked when the specified lifecycle event occurs.
+ */
 @Composable
 fun LifecycleEventEffect(
     event: Lifecycle.Event,

@@ -8,8 +8,13 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 
 /**
- * Detects actual window focus changes, e.g., when the notification shade is pulled down
- * or a system dialog appears, which does not always trigger onPause.
+ * A composable side-effect that detects actual window focus changes.
+ *
+ * This is useful for detecting events like when the notification shade is pulled down,
+ * a system dialog appears, or the user switches away from the app, which might not always
+ * trigger a standard lifecycle pause event. It uses an [android.view.ViewTreeObserver.OnWindowFocusChangeListener].
+ *
+ * @param onFocusChanged The callback to execute when the window focus changes. Receives `true` if the window gains focus, `false` otherwise.
  */
 @Composable
 fun OnWindowFocusChangedEffect(onFocusChanged: (hasFocus: Boolean) -> Unit) {

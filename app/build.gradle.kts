@@ -1,4 +1,4 @@
-﻿plugins {
+plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
@@ -34,7 +34,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "ir.amirhesambandegan"
                 artifactId = "easify-android"
-                version = "2.0.0"
+                version = "2.1.0"
 
 dependencies {
     api(libs.kotlinx.coroutines.android)

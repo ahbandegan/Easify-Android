@@ -5,8 +5,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 
 /**
- * Filters out location updates that imply impossible speeds (GPS jumping/teleporting).
- * @param maxSpeedKmh Maximum reasonable speed (e.g., 200 for cars, 1000 for airplanes).
+ * Filters out location updates that imply unrealistic speeds or sudden location teleportation/jumping.
+ *
+ * This operator computes the speed between consecutive valid location points based on the Haversine
+ * distance and elapsed time. If the implied speed exceeds [maxSpeedKmh], the update is discarded as an anomaly.
+ *
+ * @receiver A [Flow] emitting nullable [Location] updates.
+ * @param maxSpeedKmh The maximum plausible speed in kilometers per hour (e.g., 200 for automobiles, 1000 for airplanes). Defaults to 200 km/h.
+ * @return A filtered [Flow] emitting only [Location] updates that do not exceed the speed threshold.
  */
 fun Flow<Location?>.filterJumps(maxSpeedKmh: Float = 200f): Flow<Location?> {
     var lastValidLocation: Location? = null

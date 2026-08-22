@@ -8,8 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.composed
 
 /**
- * Mirrors the element horizontally if the current layout direction is [LayoutDirection.Rtl].
- * Useful for icons like back arrows that should face the other way in RTL.
+ * Mirrors the element horizontally if the current layout direction is [LayoutDirection.Rtl] (Right-to-Left).
+ * Useful for icons like back arrows that should face the other way in RTL layouts.
+ * 
+ * @return A [Modifier] that conditionally applies a horizontal scale transformation based on layout direction.
  */
 fun Modifier.rtlMirror(): Modifier = composed {
     val layoutDirection = LocalLayoutDirection.current

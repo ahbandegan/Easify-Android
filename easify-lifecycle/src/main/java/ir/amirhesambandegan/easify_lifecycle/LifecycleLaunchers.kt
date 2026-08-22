@@ -8,8 +8,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.CoroutineScope
 
 /**
- * Launches a coroutine that runs ONLY when the lifecycle is RESUMED.
- * It suspends when paused and resumes executing when resumed.
+ * Launches a coroutine that runs only when the lifecycle is at least in the [Lifecycle.State.RESUMED] state.
+ *
+ * The coroutine suspends its execution when the lifecycle state falls below [Lifecycle.State.RESUMED]
+ * (e.g., when the lifecycle is paused) and resumes executing when it returns to [Lifecycle.State.RESUMED].
+ *
+ * @param key1 An optional key used to restart the effect when it changes.
+ * @param block The suspending block to execute within the coroutine scope.
  */
 @Composable
 fun LaunchWhenResumed(
@@ -25,8 +30,13 @@ fun LaunchWhenResumed(
 }
 
 /**
- * Launches a coroutine that runs ONLY when the lifecycle is STARTED.
- * It suspends when stopped and resumes executing when started.
+ * Launches a coroutine that runs only when the lifecycle is at least in the [Lifecycle.State.STARTED] state.
+ *
+ * The coroutine suspends its execution when the lifecycle state falls below [Lifecycle.State.STARTED]
+ * (e.g., when the lifecycle is stopped) and resumes executing when it returns to [Lifecycle.State.STARTED].
+ *
+ * @param key1 An optional key used to restart the effect when it changes.
+ * @param block The suspending block to execute within the coroutine scope.
  */
 @Composable
 fun LaunchWhenStarted(

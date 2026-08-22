@@ -4,6 +4,8 @@ import java.math.BigInteger
 
 /**
  * Validates an Iranian SHEBA (IBAN) number using ISO 7064 Mod 97-10.
+ *
+ * @return `true` if the SHEBA is valid, `false` otherwise.
  */
 fun String.isValidSheba(): Boolean {
     val clean = this.uppercase().replace(" ", "")
@@ -24,6 +26,8 @@ fun String.isValidSheba(): Boolean {
 
 /**
  * Identifies the bank name from the 3-digit bank code in the SHEBA.
+ *
+ * @return The bank name as a `String` if recognized, `null` otherwise.
  */
 fun String.getShebaBankName(): String? {
     val clean = this.uppercase().replace(" ", "")

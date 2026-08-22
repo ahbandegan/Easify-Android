@@ -11,6 +11,8 @@ import ir.amirhesambandegan.easify_context.findActivity
 
 /**
  * Blurs or blanks out the app screen when sent to the recent apps list (multi-tasking view).
+ * It achieves this by dynamically adding the [WindowManager.LayoutParams.FLAG_SECURE] flag 
+ * to the window when the application is paused, and clearing it when resumed.
  */
 @Composable
 fun BackgroundPrivacyShield() {

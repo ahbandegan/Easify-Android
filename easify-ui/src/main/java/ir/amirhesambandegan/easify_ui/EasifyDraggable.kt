@@ -26,6 +26,10 @@ import kotlin.math.roundToInt
 /**
  * A free-floating draggable box that can be moved around the screen.
  * Perfect for chat heads, floating action buttons, or picture-in-picture views.
+ *
+ * @param modifier The [Modifier] to be applied to the draggable box.
+ * @param initialPosition The starting [Offset] position of the draggable box. Default is [Offset.Zero].
+ * @param content The composable content to be displayed inside the draggable box.
  */
 @Composable
 fun EasifyFloatingDraggable(
@@ -54,6 +58,14 @@ fun EasifyFloatingDraggable(
 /**
  * A simple reorderable list where items can be dragged to change their position.
  * Uses long-press to pick up an item.
+ *
+ * @param T The type of the items in the list.
+ * @param items The list of items to be displayed.
+ * @param onReorder The callback invoked when an item is moved to a new position, providing the old and new indices.
+ * @param modifier The [Modifier] to be applied to the list.
+ * @param key An optional key provider for the items to help Compose optimize updates.
+ * @param listState The state object to be used to control or observe the list's state.
+ * @param itemContent The composable content to be displayed for each item, providing the item itself and a boolean indicating if it is currently being dragged.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

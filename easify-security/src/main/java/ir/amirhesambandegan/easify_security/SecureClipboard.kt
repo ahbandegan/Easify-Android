@@ -8,8 +8,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/**
+ * A utility object to securely handle clipboard operations, minimizing the risk
+ * of sensitive data exposure through the system clipboard.
+ */
 object SecureClipboard {
 
+    /**
+     * Copies sensitive text to the system clipboard and schedules its removal
+     * after a specified duration to ensure privacy.
+     *
+     * @param context The application context used to access the clipboard service.
+     * @param label The user-visible label for the clip data.
+     * @param text The sensitive text to be copied to the clipboard.
+     * @param clearAfterMillis The duration in milliseconds before the clipboard is automatically cleared. Defaults to 30,000ms (30 seconds).
+     * @param scope The coroutine scope used to launch the delayed clearing task. Defaults to a scope using [Dispatchers.Main].
+     */
     fun copySensitiveText(
         context: Context,
         label: String,

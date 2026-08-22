@@ -44,6 +44,7 @@ dependencies {
     api(project(":easify-storage"))
     api(project(":easify-ui"))
     api(project(":easify-validation"))
+    api(project(":easify-camera"))
 }
 
 afterEvaluate {
@@ -53,7 +54,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "ir.amirhesambandegan.easify-android"
                 artifactId = "easify-android"
-                version = "2.0.0"
+                version = "2.1.0"
             }
         }
     }

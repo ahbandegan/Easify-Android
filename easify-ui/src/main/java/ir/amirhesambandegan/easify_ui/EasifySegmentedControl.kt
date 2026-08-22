@@ -20,6 +20,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * A segmented control component allowing users to select one option from a linear set of choices.
+ *
+ * @param items The list of text labels for each segment.
+ * @param selectedIndex The index of the currently selected segment.
+ * @param onItemSelected The callback invoked when a segment is selected, providing the index of the selected item.
+ * @param modifier The [Modifier] to be applied to the segmented control.
+ * @param height The height of the segmented control container. Default is 48.dp.
+ * @param containerColor The background color of the segmented control container. Default is a light gray.
+ * @param indicatorColor The background color of the sliding selection indicator. Default is the surface color from [MaterialTheme.colorScheme].
+ * @param activeTextColor The text color of the currently selected segment. Default is the on-surface color from [MaterialTheme.colorScheme].
+ * @param inactiveTextColor The text color of the unselected segments. Default is [Color.Gray].
+ * @param cornerRadius The corner radius of the segmented control container and the sliding indicator. Default is 24.dp.
+ */
 @Composable
 fun EasifySegmentedControl(
     items: List<String>,

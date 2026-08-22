@@ -10,7 +10,12 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 
 /**
- * Executes the callback when the physical screen turns ON or OFF.
+ * A composable side-effect that executes a callback when the physical screen turns ON or OFF.
+ *
+ * It registers a [BroadcastReceiver] listening for [Intent.ACTION_SCREEN_ON] and [Intent.ACTION_SCREEN_OFF]
+ * actions and unregisters it when the composable leaves the composition.
+ *
+ * @param onStateChanged The callback to execute when the screen state changes. Receives `true` if the screen turns on, `false` if it turns off.
  */
 @Composable
 fun OnScreenStateChangedEffect(onStateChanged: (isAwake: Boolean) -> Unit) {

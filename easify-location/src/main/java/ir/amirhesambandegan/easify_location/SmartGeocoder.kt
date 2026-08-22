@@ -12,7 +12,15 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 /**
- * Reverses a Location into a human-readable Address.
+ * Reversely geocodes a [Location] into a human-readable [Address] asynchronously.
+ *
+ * Automatically handles API level compatibility: uses callback-based API on Android 13+ (API 33, [Build.VERSION_CODES.TIRAMISU]),
+ * and synchronous fallback on older Android versions executed on [Dispatchers.IO].
+ *
+ * @receiver The [Location] containing latitude and longitude to reverse geocode.
+ * @param context The Android [Context] used to instantiate [Geocoder].
+ * @param locale The desired [Locale] for address formatting. Defaults to [Locale.getDefault].
+ * @return The first matching [Address] if resolved, or `null` if resolution fails or no address is found.
  */
 suspend fun Location.toAddress(context: Context, locale: Locale = Locale.getDefault()): Address? = withContext(Dispatchers.IO) {
     val geocoder = Geocoder(context, locale)
@@ -35,7 +43,10 @@ suspend fun Location.toAddress(context: Context, locale: Locale = Locale.getDefa
 }
 
 /**
- * Formats the Address object into a clean, readable string.
+ * Formats all address lines of an [Address] object into a single comma-separated string.
+ *
+ * @receiver The [Address] instance containing address lines.
+ * @return A comma-separated [String] containing all available address lines.
  */
 fun Address.toFormattedString(): String {
     val builder = StringBuilder()
@@ -47,7 +58,14 @@ fun Address.toFormattedString(): String {
 }
 
 /**
- * Forwards a human-readable address into coordinates (Location).
+ * Forward geocodes a human-readable address or place name into geographic coordinates wrapped in a [Location].
+ *
+ * Automatically handles API level compatibility: uses callback-based API on Android 13+ (API 33, [Build.VERSION_CODES.TIRAMISU]),
+ * and synchronous fallback on older Android versions executed on [Dispatchers.IO].
+ *
+ * @receiver The [Geocoder] instance used to perform the lookup.
+ * @param addressName The place name or street address string to search for.
+ * @return A [Location] with provider set to `"geocoder"` containing the resolved latitude and longitude, or `null` if not found.
  */
 suspend fun Geocoder.getCoordinates(addressName: String): Location? = withContext(Dispatchers.IO) {
     try {

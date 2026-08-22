@@ -7,6 +7,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import java.util.Date
 
+/**
+ * A Jetpack Compose dialog for selecting a Persian (Jalali) date.
+ *
+ * @param onDismissRequest Callback to be invoked when the dialog is dismissed without confirming.
+ * @param onDateSelected Callback to be invoked when a date is confirmed. Receives the selected [JalaliDate].
+ * @param initialDate The initial [JalaliDate] to display in the picker. Defaults to the current date.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersianDatePickerDialog(
@@ -58,6 +65,15 @@ fun PersianDatePickerDialog(
     )
 }
 
+/**
+ * A row component for selecting a specific part of a date (e.g., year, month, or day).
+ *
+ * @param label The text label to display for this selector.
+ * @param value The current integer value of the selector (used as fallback).
+ * @param valueText The string representation of the current value. Defaults to Persian digits of [value].
+ * @param onIncrement Callback to be invoked when the increment button is clicked.
+ * @param onDecrement Callback to be invoked when the decrement button is clicked.
+ */
 @Composable
 private fun DateSelectorRow(
     label: String,

@@ -10,6 +10,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 
+/**
+ * A composable that displays an image which can be zoomed and panned by the user.
+ *
+ * @param imageBitmap The [ImageBitmap] to be displayed.
+ * @param modifier The [Modifier] to be applied to this layout.
+ */
 @Composable
 fun EasifyZoomableImage(
     imageBitmap: ImageBitmap,

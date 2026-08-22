@@ -7,14 +7,23 @@ import android.os.Build
 import android.provider.Settings
 
 /**
- * Utility extensions for prompting the user to enable system features.
- * Utilizes the beautiful floating Settings Panels on Android 10+ when available.
+ * Utility extensions for prompting the user to enable or manage system features.
+ * 
+ * On Android 10 (API 29) and above, these extensions intelligently utilize the 
+ * Settings Panel API to display floating bottom sheets directly within the app, 
+ * providing a seamless user experience. On older devices, they gracefully fall back 
+ * to opening the full-screen system settings app.
  */
 
 /**
- * Prompts the user to enable Wi-Fi.
- * On Android 10+ (API 29+), this opens a floating bottom sheet (Settings Panel).
- * On older devices, it opens the Wi-Fi settings page.
+ * Prompts the user to enable or manage Wi-Fi connections.
+ * 
+ * On Android 10+ (API 29+), this opens a floating bottom sheet containing quick 
+ * toggles for Wi-Fi (via `Settings.Panel.ACTION_WIFI`). On older devices, it opens 
+ * the traditional full-screen Wi-Fi settings page.
+ * 
+ * It adds `FLAG_ACTIVITY_NEW_TASK` to the intent, making it safe to call from 
+ * any context, including backgrounds or services.
  */
 fun Context.promptEnableWifi() {
     val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -27,8 +36,11 @@ fun Context.promptEnableWifi() {
 }
 
 /**
- * Prompts the user to manage Internet Connectivity (Wi-Fi and Cellular Data).
- * On Android 10+ (API 29+), this opens a floating bottom sheet.
+ * Prompts the user to manage their Internet Connectivity (both Wi-Fi and Cellular Data).
+ * 
+ * On Android 10+ (API 29+), this opens a floating bottom sheet containing toggles 
+ * for both Wi-Fi and mobile data (via `Settings.Panel.ACTION_INTERNET_CONNECTIVITY`).
+ * On older devices, it opens the "Wireless & Networks" settings page.
  */
 fun Context.promptInternetConnectivity() {
     val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -41,8 +53,10 @@ fun Context.promptInternetConnectivity() {
 }
 
 /**
- * Prompts the user to enable NFC.
- * On Android 10+ (API 29+), this opens a floating bottom sheet.
+ * Prompts the user to enable or manage NFC (Near Field Communication).
+ * 
+ * On Android 10+ (API 29+), this opens a floating bottom sheet to toggle NFC on or off.
+ * On older devices, it opens the specific NFC settings page.
  */
 fun Context.promptEnableNfc() {
     val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -55,8 +69,11 @@ fun Context.promptEnableNfc() {
 }
 
 /**
- * Prompts the user to adjust Volume levels.
- * On Android 10+ (API 29+), this opens a floating bottom sheet with volume sliders.
+ * Prompts the user to view and adjust system Volume levels.
+ * 
+ * On Android 10+ (API 29+), this opens a floating bottom sheet displaying sliders 
+ * for Media, Call, Ring, and Alarm volumes (via `Settings.Panel.ACTION_VOLUME`).
+ * On older devices, it opens the full Sound settings page.
  */
 fun Context.promptVolumeControls() {
     val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -69,7 +86,12 @@ fun Context.promptVolumeControls() {
 }
 
 /**
- * Prompts the user to enable Bluetooth via a seamless system dialog.
+ * Prompts the user to enable Bluetooth.
+ * 
+ * It primarily attempts to use the `BluetoothAdapter.ACTION_REQUEST_ENABLE` intent, 
+ * which usually presents a non-intrusive dialog asking the user to grant permission 
+ * to turn on Bluetooth. If this intent is blocked or unsupported, it falls back to 
+ * opening the full-screen Bluetooth settings page.
  */
 fun Context.promptEnableBluetooth() {
     val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE).apply {
@@ -87,8 +109,11 @@ fun Context.promptEnableBluetooth() {
 }
 
 /**
- * Prompts the user to enable Location (GPS).
- * Note: Android does not provide a Settings Panel for location, so this opens the settings page.
+ * Prompts the user to enable Location (GPS) services.
+ * 
+ * Note: Android currently does not provide a Settings Panel bottom sheet for 
+ * location services. Therefore, this always opens the full-screen "Location" 
+ * settings page (via `Settings.ACTION_LOCATION_SOURCE_SETTINGS`).
  */
 fun Context.promptEnableLocation() {
     val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).apply {

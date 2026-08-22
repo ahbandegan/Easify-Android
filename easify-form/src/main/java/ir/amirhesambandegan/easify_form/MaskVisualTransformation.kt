@@ -6,10 +6,24 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 
 /**
- * A generic visual transformation that masks input based on a pattern.
+ * A generic visual transformation that masks input based on a given pattern.
+ *
  * Example pattern: "+98 (###) ###-####" where '#' represents a character typed by the user.
+ * It maps the characters entered by the user into the mask placeholders, ensuring
+ * proper cursor placement when typing or deleting characters.
+ *
+ * @property mask The template mask string to enforce.
+ * @property maskChar The character within the mask that acts as a placeholder for user input. Defaults to '#'.
  */
 class MaskVisualTransformation(private val mask: String, private val maskChar: Char = '#') : VisualTransformation {
+    
+    /**
+     * Transforms the original text by applying the mask pattern and creates an appropriate mapping
+     * between the original and transformed character offsets.
+     *
+     * @param text The original unformatted text.
+     * @return The [TransformedText] containing the masked output and offset mapping.
+     */
     override fun filter(text: AnnotatedString): TransformedText {
         var out = ""
         var maskIndex = 0

@@ -2,6 +2,9 @@ package ir.amirhesambandegan.easify_persian
 
 /**
  * Validates Iranian National Code (کد ملی).
+ * A valid national code must be exactly 10 digits and pass the checksum algorithm.
+ *
+ * @return `true` if the string is a valid Iranian National Code, `false` otherwise.
  */
 fun String.isValidNationalCode(): Boolean {
     if (!matches(Regex("^[0-9]{10}$"))) return false
@@ -12,6 +15,9 @@ fun String.isValidNationalCode(): Boolean {
 
 /**
  * Validates Iranian Mobile Phone Number (شماره موبایل).
+ * A valid mobile number can start with '09', '+989', '00989', or '989' followed by 9 digits.
+ *
+ * @return `true` if the string is a valid Iranian mobile number, `false` otherwise.
  */
 fun String.isValidPersianMobile(): Boolean {
     return matches(Regex("^(?:0|98|\\+98|0098)?9[0-9]{9}$"))
@@ -19,6 +25,9 @@ fun String.isValidPersianMobile(): Boolean {
 
 /**
  * Validates Iranian Bank Card Number (شماره کارت ۱۶ رقمی).
+ * A valid card number must be exactly 16 digits and pass the Luhn algorithm checksum.
+ *
+ * @return `true` if the string is a valid 16-digit bank card number, `false` otherwise.
  */
 fun String.isValidBankCard(): Boolean {
     if (!matches(Regex("^[0-9]{16}$"))) return false

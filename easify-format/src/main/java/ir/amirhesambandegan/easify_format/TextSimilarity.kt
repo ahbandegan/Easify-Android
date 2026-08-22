@@ -2,6 +2,13 @@ package ir.amirhesambandegan.easify_format
 
 import kotlin.math.max
 
+/**
+ * Calculates the similarity percentage between this string and another string
+ * based on the Levenshtein distance.
+ *
+ * @param other The string to compare against.
+ * @return A double value between 0.0 and 100.0 representing the similarity percentage.
+ */
 fun String.similarityPercentage(other: String): Double {
     if (this == other) return 100.0
     if (this.isEmpty() || other.isEmpty()) return 0.0
@@ -11,6 +18,14 @@ fun String.similarityPercentage(other: String): Double {
     return (1.0 - (distance.toDouble() / maxLen)) * 100
 }
 
+/**
+ * Computes the Levenshtein distance between two character sequences.
+ *
+ * @param lhs The first character sequence.
+ * @param rhs The second character sequence.
+ * @return The minimum number of single-character edits (insertions, deletions, or substitutions)
+ * required to change one sequence into the other.
+ */
 private fun levenshteinDistance(lhs: CharSequence, rhs: CharSequence): Int {
     val lhsLength = lhs.length
     val rhsLength = rhs.length

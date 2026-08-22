@@ -1,4 +1,4 @@
-﻿plugins {
+plugins {
     alias(libs.plugins.android.library)
     id("maven-publish")
 }
@@ -31,7 +31,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "ir.amirhesambandegan.easify-android"
                 artifactId = "easify-storage"
-                version = "2.0.0"
+                version = "2.1.0"
             }
         }
     }
@@ -44,6 +44,10 @@ dependencies {
 
     api(project(":easify-security"))
     api(libs.datastore.preferences)
+    
+    api(libs.androidx.room.runtime)
+    api(libs.androidx.room.ktx)
+    api(libs.gson)
 }
 
 

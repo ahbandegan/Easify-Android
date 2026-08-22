@@ -15,6 +15,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
+/**
+ * A composable text view that can be expanded or collapsed to show or hide overflowing text.
+ *
+ * @param text The full text content to be displayed.
+ * @param modifier The [Modifier] to be applied to the component.
+ * @param collapsedMaxLines The maximum number of lines to show when the text is collapsed. Default is 3.
+ * @param expandText The label for the button to expand the text. Default is "Read more".
+ * @param collapseText The label for the button to collapse the text. Default is "Show less".
+ * @param textStyle The typography style to be applied to the text. Default is [LocalTextStyle.current].
+ * @param expandColor The color of the expand/collapse button text. Default is the primary color from [MaterialTheme.colorScheme].
+ */
 @Composable
 fun EasifyExpandableText(
     text: String,

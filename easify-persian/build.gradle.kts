@@ -1,6 +1,7 @@
-﻿plugins {
+plugins {
     alias(libs.plugins.android.library)
     id("maven-publish")
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -17,6 +18,10 @@ android {
             withSourcesJar()
         }
     }
+    
+    buildFeatures {
+        compose = true
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -31,17 +36,20 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "ir.amirhesambandegan.easify-android"
                 artifactId = "easify-persian"
-                version = "2.0.0"
+                version = "2.1.0"
             }
         }
     }
 }
 
 dependencies {
+    api(platform(libs.androidx.compose.bom))
+    api(libs.androidx.compose.ui)
+    api(libs.androidx.compose.material3)
+    api(libs.androidx.compose.activity)
     api(libs.androidx.core.ktx)
     api(libs.kotlinx.coroutines.android)
     api(libs.kotlinx.coroutines.core)
-
 }
 
 

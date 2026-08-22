@@ -20,8 +20,11 @@ import androidx.compose.ui.unit.dp
  * A Composable wrapper that monitors internet connectivity and overlays a "No Connection" 
  * UI when the device is offline.
  *
- * @param noConnectionContent The UI to display when offline. Defaults to [DefaultNoInternetUI].
- * @param content The main content of the screen to be wrapped.
+ * While offline, user interactions with the underlying content are blocked and an overlay
+ * is presented displaying either the provided [noConnectionContent] or a default UI.
+ *
+ * @param noConnectionContent The composable content to display when offline. Defaults to [DefaultNoInternetUI].
+ * @param content The main content of the screen to be wrapped and displayed when online.
  */
 @Composable
 fun ConnectivityWrapper(
@@ -54,6 +57,8 @@ fun ConnectivityWrapper(
 
 /**
  * The default UI displayed by [ConnectivityWrapper] when there is no internet connection.
+ *
+ * Displays a warning icon along with user-friendly messages informing the user about the lack of connectivity.
  */
 @Composable
 private fun DefaultNoInternetUI() {

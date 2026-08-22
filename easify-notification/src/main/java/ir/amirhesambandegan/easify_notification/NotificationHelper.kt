@@ -7,20 +7,20 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 
 /**
- * A simplified utility to show notifications on Android.
+ * A simplified utility object to show standard notifications on Android.
  */
 object NotificationHelper {
 
     /**
-     * Shows a simple text notification.
+     * Shows a simple text notification, automatically handling channel creation on API 26+.
      *
-     * @param context The application context.
+     * @param context The application or component [Context].
      * @param channelId The unique ID for the notification channel.
-     * @param channelName The name of the channel visible to the user.
-     * @param title The title of the notification.
+     * @param channelName The user-visible name of the notification channel.
+     * @param title The title text of the notification.
      * @param message The body text of the notification.
-     * @param smallIcon The resource ID for the small icon.
-     * @param notificationId The unique ID for this notification instance.
+     * @param smallIcon The drawable resource ID for the small icon.
+     * @param notificationId The unique ID for this notification instance. Defaults to 1001.
      */
     fun showNotification(
         context: Context,

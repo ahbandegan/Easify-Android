@@ -7,10 +7,28 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
 
+/**
+ * Utility object for displaying notifications with inline direct reply capability using [RemoteInput].
+ */
 object DirectReplyNotification {
 
+    /**
+     * Intent extra key used to retrieve the inline reply text from the user's input.
+     */
     const val KEY_TEXT_REPLY = "key_text_reply"
 
+    /**
+     * Displays a notification that allows the user to directly type and send a reply.
+     *
+     * @param context The application or component [Context].
+     * @param channelId The notification channel ID where this notification will be posted.
+     * @param notificationId Unique identifier for this notification.
+     * @param title The title text of the notification.
+     * @param message The body text of the notification.
+     * @param iconRes The drawable resource ID for the small icon and action icon.
+     * @param replyActionTitle The label for the reply action button and input field. Defaults to "Reply".
+     * @param intentClass The class of the [android.content.BroadcastReceiver] or component intended to receive the reply.
+     */
     fun show(
         context: Context,
         channelId: String,

@@ -14,10 +14,19 @@ import kotlinx.coroutines.flow.onStart
 
 /**
  * Monitors the Bluetooth adapter state (Enabled/Disabled).
+ * 
+ * @property context The application or activity context used to register broadcast receivers.
  */
 class BluetoothObserver(private val context: Context) {
 
+    /**
+     * The system [BluetoothManager] retrieved from the context.
+     */
     private val bluetoothManager = context.getSystemService(BluetoothManager::class.java)
+    
+    /**
+     * The default [BluetoothAdapter] used to check the initial state.
+     */
     private val adapter = bluetoothManager?.adapter
 
     /**

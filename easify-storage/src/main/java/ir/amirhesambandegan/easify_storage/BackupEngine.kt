@@ -7,10 +7,18 @@ import java.io.FileOutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
+/**
+ * A utility object that handles the backup and export of the application's local data.
+ */
 object BackupEngine {
 
     /**
-     * Creates a standard backup zip of the DataStore and Databases.
+     * Creates a standard backup zip archive containing the application's
+     * databases, DataStore, and shared preferences.
+     *
+     * @param context The application context used to locate internal data directories.
+     * @param outputFile The destination file where the backup zip will be saved.
+     * @return True if the backup was created successfully, false if an error occurred.
      */
     fun exportAppBackup(context: Context, outputFile: File): Boolean {
         return try {

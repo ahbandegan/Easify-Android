@@ -1,4 +1,4 @@
-﻿plugins {
+plugins {
     alias(libs.plugins.android.library)
     id("maven-publish")
     alias(libs.plugins.kotlin.compose)
@@ -36,7 +36,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "ir.amirhesambandegan.easify-android"
                 artifactId = "easify-lifecycle"
-                version = "2.0.0"
+                version = "2.1.0"
             }
         }
     }
@@ -52,6 +52,9 @@ dependencies {
     api(libs.androidx.compose.ui.graphics)
     api(libs.androidx.compose.material3)
     api(libs.androidx.compose.activity)
+    
+    api(libs.androidx.lifecycle.process)
+    api(libs.androidx.lifecycle.runtime.compose)
 }
 
 

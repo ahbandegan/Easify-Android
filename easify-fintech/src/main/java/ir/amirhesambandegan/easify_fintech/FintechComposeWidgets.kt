@@ -7,6 +7,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.unit.dp
 
+/**
+ * A composable function that displays a financial balance with a currency symbol.
+ * It provides a toggleable hidden state (e.g., to hide the balance for privacy).
+ *
+ * @param balance The numerical balance to display.
+ * @param modifier The [Modifier] to be applied to the text.
+ * @param currency The currency string to append to the formatted balance. Default is "تومان" (Toman).
+ * @param initiallyHidden Whether the balance should be initially hidden when the composable is loaded. Default is `false`.
+ * @param useBlurEffect Whether to use a blur effect to hide the balance, or replace it with asterisks. Default is `true`.
+ */
 @Composable
 fun EasifyBalanceText(
     balance: Long,

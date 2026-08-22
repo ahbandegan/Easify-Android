@@ -7,6 +7,12 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 
+/**
+ * Decodes an image from a [Uri] and automatically corrects its rotation based on EXIF orientation data.
+ *
+ * @param context The [Context] used to resolve the URI.
+ * @return A correctly rotated [Bitmap], or null if decoding or rotation fails.
+ */
 fun Uri.toCorrectedBitmap(context: Context): Bitmap? {
     try {
         val inputStream = context.contentResolver.openInputStream(this) ?: return null

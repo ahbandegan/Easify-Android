@@ -10,10 +10,44 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.delay
 
+/**
+ * Represents the estimated network bandwidth quality classification.
+ */
 enum class NetworkBandwidth {
-    OFFLINE, POOR, MODERATE, GOOD, EXCELLENT
+    /**
+     * Indicates there is no active internet connection.
+     */
+    OFFLINE,
+
+    /**
+     * Poor connection quality (downstream bandwidth < 0.5 Mbps).
+     */
+    POOR,
+
+    /**
+     * Moderate connection quality (downstream bandwidth between 0.5 Mbps and 2 Mbps).
+     */
+    MODERATE,
+
+    /**
+     * Good connection quality (downstream bandwidth between 2 Mbps and 10 Mbps).
+     */
+    GOOD,
+
+    /**
+     * Excellent connection quality (downstream bandwidth >= 10 Mbps).
+     */
+    EXCELLENT
 }
 
+/**
+ * A Composable function that continuously monitors and estimates the current network bandwidth quality.
+ *
+ * This function periodically samples the active network's downstream bandwidth using [ConnectivityManager]
+ * and provides the estimated [NetworkBandwidth] level as a Compose [State].
+ *
+ * @return A [State] holding the current estimated [NetworkBandwidth].
+ */
 @Composable
 fun rememberBandwidthState(): State<NetworkBandwidth> {
     val context = LocalContext.current

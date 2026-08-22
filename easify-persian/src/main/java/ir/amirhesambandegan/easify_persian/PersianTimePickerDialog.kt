@@ -5,6 +5,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 
+/**
+ * A Jetpack Compose dialog for selecting a time.
+ *
+ * @param onDismissRequest Callback to be invoked when the dialog is dismissed without confirming.
+ * @param onTimeSelected Callback to be invoked when a time is confirmed. Receives the selected [hour] and [minute].
+ * @param initialHour The initial hour to display in the picker. Defaults to 12.
+ * @param initialMinute The initial minute to display in the picker. Defaults to 0.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersianTimePickerDialog(

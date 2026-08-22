@@ -11,7 +11,12 @@ import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.delay
 
 /**
- * Analyzes the network for VPN usage and Captive Portals (Hotel/Airport Wi-Fi login screens).
+ * Analyzes the network for VPN usage and captive portals (e.g., hotel or airport Wi-Fi login screens).
+ *
+ * Continuously polls the active network's capabilities every 2 seconds and provides the updated
+ * [NetworkSecurityStatus] as a Compose [State].
+ *
+ * @return A [State] holding the latest [NetworkSecurityStatus].
  */
 @Composable
 fun rememberNetworkSecurityStatus(): State<NetworkSecurityStatus> {
@@ -41,6 +46,12 @@ fun rememberNetworkSecurityStatus(): State<NetworkSecurityStatus> {
     }
 }
 
+/**
+ * Data class holding the security and captive portal state of the current network.
+ *
+ * @property isVpnActive `true` if the active network uses a VPN transport; `false` otherwise.
+ * @property isCaptivePortal `true` if the active network requires user login/portal authentication; `false` otherwise.
+ */
 data class NetworkSecurityStatus(
     val isVpnActive: Boolean,
     val isCaptivePortal: Boolean

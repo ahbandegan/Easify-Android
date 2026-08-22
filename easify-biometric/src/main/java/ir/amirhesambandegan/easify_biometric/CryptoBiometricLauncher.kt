@@ -10,12 +10,26 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
+/**
+ * A launcher that provides biometric authentication backed by a cryptographic key.
+ * This ensures that the biometric authentication is strongly bound to a secure key in the Android Keystore.
+ * 
+ * @property activity The [FragmentActivity] used to host the biometric prompt.
+ * @property onResult A callback invoked with the [BiometricResult] of the authentication attempt.
+ */
 class CryptoBiometricLauncher(
     private val activity: FragmentActivity,
     private val onResult: (BiometricResult) -> Unit
 ) {
+    /** The alias used to store the secure key in the Keystore. */
     private val keyAlias = "EasifySecureKey"
 
+    /**
+     * Launches the biometric prompt with crypto-object binding.
+     * 
+     * @param title The title displayed on the prompt.
+     * @param subtitle The optional subtitle displayed on the prompt.
+     */
     fun launchCrypto(title: String, subtitle: String? = null) {
         try {
             val cipher = getInitializedCipher()
@@ -50,6 +64,12 @@ class CryptoBiometricLauncher(
         }
     }
 
+    /**
+     * Retrieves and initializes a [Cipher] using the secure key from the Keystore.
+     * Generates a new key if one does not already exist.
+     * 
+     * @return An initialized [Cipher] for encryption.
+     */
     private fun getInitializedCipher(): Cipher {
         val keyStore = KeyStore.getInstance("AndroidKeyStore")
         keyStore.load(null)
@@ -59,6 +79,11 @@ class CryptoBiometricLauncher(
         return cipher
     }
 
+    /**
+     * Generates a new AES secret key in the Android Keystore that requires user authentication.
+     * 
+     * @return The newly generated [SecretKey].
+     */
     private fun generateKey(): SecretKey {
         val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
         keyGenerator.init(

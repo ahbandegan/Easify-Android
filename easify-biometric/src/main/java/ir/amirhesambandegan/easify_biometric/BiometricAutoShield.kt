@@ -12,6 +12,14 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 
+/**
+ * A Composable that automatically shields the content and requests biometric authentication
+ * when the app comes to the foreground (ON_RESUME), unless a grace period is active.
+ *
+ * @param isUnlocked Whether the content is currently unlocked.
+ * @param onUnlockRequest Callback invoked to request an unlock (e.g., show biometric prompt).
+ * @param content The actual content to display when unlocked or in the background.
+ */
 @Composable
 fun BiometricAutoShield(
     isUnlocked: Boolean,

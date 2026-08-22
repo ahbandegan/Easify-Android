@@ -1,24 +1,49 @@
 [versions]
 agp = "9.3.1"
+barcodeScanning = "17.3.0"
 biometric = "1.4.0-alpha07"
+cameraView = "1.6.1"
+cameraLifecycle = "1.6.1"
 coreKtx = "1.19.0"
+gson = "2.14.0"
 junit = "4.13.2"
-appcompat = "1.7.1"
+appcompat = "1.8.0"
+ktorClientAuth = "3.5.2"
+lifecycleRuntimeCompose = "2.11.0"
 material = "1.14.0"
 kotlin = "2.3.10"
 coroutines = "1.11.0"
 ktor = "3.5.2"
 kotlinx-serialization = "1.11.0"
 datastorePreferences = "1.2.1"
-composeBom = "2025.08.01"
-playServicesLocation = "21.3.0"
-activityCompose = "1.10.1"
+composeBom = "2026.08.00"
+materialIconsCore = "1.7.8"
+playServicesLocation = "21.4.0"
+activityCompose = "1.13.0"
+lifecycleProcess = "2.11.0"
+roomRuntime = "2.8.4"
+roomKtx = "2.8.4"
+securityCrypto = "1.1.0"
+workRuntimeKtx = "2.11.2"
 
 [libraries]
 androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
+androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraView" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraView" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraLifecycle" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraView" }
+androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "materialIconsCore" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorClientAuth" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 
@@ -41,6 +66,7 @@ ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-conte
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycleProcess" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

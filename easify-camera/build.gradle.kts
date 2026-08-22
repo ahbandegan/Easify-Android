@@ -36,7 +36,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "ir.amirhesambandegan.easify-android"
                 artifactId = "easify-ui"
-                version = "2.0.0"
+                version = "2.1.0"
             }
         }
     }
@@ -44,7 +44,6 @@ afterEvaluate {
 
 dependencies {
     api(libs.androidx.core.ktx)
-    api(libs.kotlinx.coroutines.android)
     api(libs.kotlinx.coroutines.core)
 
     api(platform(libs.androidx.compose.bom))

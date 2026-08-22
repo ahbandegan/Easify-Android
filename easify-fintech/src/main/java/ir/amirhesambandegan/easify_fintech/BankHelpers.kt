@@ -2,6 +2,8 @@ package ir.amirhesambandegan.easify_fintech
 
 /**
  * Extracts a 5, 6, or 7 digit OTP from a Persian bank SMS.
+ *
+ * @return The extracted OTP string, or `null` if no matching OTP is found.
  */
 fun String.extractBankOtp(): String? {
     val englishText = this.toEnglishNumbers()
@@ -10,9 +12,15 @@ fun String.extractBankOtp(): String? {
     return regex.find(englishText)?.value
 }
 
+/**
+ * A helper object for working with Iranian IBAN (Sheba) numbers.
+ */
 object ShebaHelper {
     /**
      * Extracts the bank name from an Iranian IBAN (Sheba).
+     *
+     * @param sheba The 26-character Iranian IBAN string (e.g., starting with "IR").
+     * @return The name of the bank in Persian, or "نامشخص" (Unknown) if not recognized or invalid.
      */
     fun getBankNameFromSheba(sheba: String): String {
         if (!sheba.startsWith("IR", ignoreCase = true) || sheba.length != 26) return "نامشخص"

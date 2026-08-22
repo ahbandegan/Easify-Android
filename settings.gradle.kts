@@ -47,7 +47,7 @@ include(
     ":easify-sensor",
     ":easify-storage",
     ":easify-ui",
-    ":easify-validation"
+    ":easify-validation",
+    ":easify-camera"
 )
 include(":easify-android")
-

@@ -10,7 +10,13 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 
 /**
- * Fires when the date changes (midnight passes) or timezone changes.
+ * A side-effect composable that fires a callback when the system date changes (e.g., midnight passes)
+ * or when the system timezone changes.
+ *
+ * This effect registers a [BroadcastReceiver] for [Intent.ACTION_DATE_CHANGED] and
+ * [Intent.ACTION_TIMEZONE_CHANGED] and unregisters it when the composable leaves the composition.
+ *
+ * @param onDateChanged The callback to be executed when the date or timezone changes.
  */
 @Composable
 fun OnDateChangedEffect(onDateChanged: () -> Unit) {

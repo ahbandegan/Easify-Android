@@ -14,11 +14,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /**
  * Adds a dashed border around the composable.
+ *
+ * @param color The color of the dashed border. Default is [Color.Gray].
+ * @param strokeWidth The width of the dashed border stroke. Default is 2.dp.
+ * @param dashLength The length of each dash. Default is 8.dp.
+ * @param gapLength The length of the gap between dashes. Default is 4.dp.
+ * @param cornerRadius The radius for the rounded corners of the border. Default is 0.dp (sharp corners).
+ * @return A [Modifier] with the dashed border applied.
  */
 fun Modifier.dashedBorder(
     color: Color = Color.Gray,
@@ -40,6 +48,12 @@ fun Modifier.dashedBorder(
 
 /**
  * Adds a pulsing/breathing scale and alpha animation.
+ *
+ * @param minScale The minimum scale factor during the pulse animation. Default is 0.95f.
+ * @param maxScale The maximum scale factor during the pulse animation. Default is 1.05f.
+ * @param minAlpha The minimum alpha transparency during the pulse animation. Default is 0.5f.
+ * @param durationMillis The duration of one pulse cycle in milliseconds. Default is 1000.
+ * @return A [Modifier] with the pulsing animation applied.
  */
 fun Modifier.pulse(
     minScale: Float = 0.95f,
@@ -69,7 +83,7 @@ fun Modifier.pulse(
         label = "pulse_alpha"
     )
     
-    androidx.compose.ui.graphics.graphicsLayer {
+    graphicsLayer {
         scaleX = scale
         scaleY = scale
         this.alpha = alpha
@@ -79,6 +93,11 @@ fun Modifier.pulse(
 /**
  * Applies a glassmorphism (frosted glass) effect to the composable.
  * Note: `blur` modifier requires Android 12+ (API 31+) to work natively.
+ *
+ * @param blurRadius The radius of the blur effect. Default is 16.dp.
+ * @param backgroundColor The background color, typically semi-transparent. Default is white with 20% opacity.
+ * @param shape The shape to which the effect is clipped. Default is a rounded corner shape with 16.dp radius.
+ * @return A [Modifier] with the glassmorphism effect applied.
  */
 fun Modifier.glass(
     blurRadius: Dp = 16.dp,
@@ -91,6 +110,10 @@ fun Modifier.glass(
 
 /**
  * Adds fading edges to the top and bottom of a scrollable area.
+ *
+ * @param topEdgeHeight The height of the top fading edge. Default is 16.dp.
+ * @param bottomEdgeHeight The height of the bottom fading edge. Default is 16.dp.
+ * @return A [Modifier] with the top and bottom fading edges applied.
  */
 fun Modifier.fadingEdges(
     topEdgeHeight: Dp = 16.dp,

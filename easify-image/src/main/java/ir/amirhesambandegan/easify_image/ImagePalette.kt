@@ -5,6 +5,9 @@ import androidx.compose.ui.graphics.Color
 
 /**
  * A lightweight dominant color extractor without external dependencies.
+ * Scales down the [Bitmap] to a single pixel to find the most dominant color.
+ *
+ * @return The dominant [Color] of the image.
  */
 fun Bitmap.extractDominantColor(): Color {
     // Scale down to a very small size for performance
@@ -14,6 +17,12 @@ fun Bitmap.extractDominantColor(): Color {
     return Color(pixel)
 }
 
+/**
+ * Extracts the average color of the [Bitmap] by scaling it down to a 5x5 grid
+ * and calculating the average of the RGB values of all 25 pixels.
+ *
+ * @return The average [Color] of the image.
+ */
 fun Bitmap.extractAverageColor(): Color {
     val scaledBitmap = Bitmap.createScaledBitmap(this, 5, 5, true)
     var r = 0L

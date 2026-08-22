@@ -12,15 +12,21 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 
 /**
- * Uploads a file from a [Uri] using Multi-part form data with progress tracking.
+ * Uploads a file from an Android [Uri] using multipart/form-data content with progress tracking.
  *
- * @param url The destination endpoint.
- * @param fileUri The Android Uri of the file to upload.
- * @param context The application context to resolve the Uri.
- * @param fileKey The form key for the file (default is "file").
- * @param extraFields Additional text fields to include in the form.
- * @param onProgress Callback invoked during upload with (bytesSent, totalBytes).
- * @return An [EasifyResult] with the server response.
+ * This function resolves the file bytes, MIME type, and file name from the provided [fileUri] using
+ * the given [context]'s content resolver, constructs a multipart form payload with any [extraFields],
+ * and executes a safe HTTP POST request with upload progress updates.
+ *
+ * @param T The expected deserialized response model type.
+ * @receiver The [HttpClient] instance used to execute the request.
+ * @param url The remote endpoint URL to which the file will be uploaded.
+ * @param fileUri The Android [Uri] referencing the local file or content stream to upload.
+ * @param context The Android [Context] used to resolve file streams and MIME types via [android.content.ContentResolver].
+ * @param fileKey The form field key associated with the file part. Defaults to `"file"`.
+ * @param extraFields A map of additional key-value string pairs to include as form fields in the request body.
+ * @param onProgress A callback invoked during upload progress with `(bytesSent, totalBytes)`.
+ * @return An [EasifyResult] representing either a [EasifyResult.Success], [EasifyResult.ApiError], or [EasifyResult.NetworkError].
  */
 suspend inline fun <reified T> HttpClient.uploadFile(
     url: String,

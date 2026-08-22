@@ -14,6 +14,9 @@ object BluetoothUtils {
 
     /**
      * Returns the required permissions for Bluetooth operations based on the Android version.
+     * Handled differences between Android 12+ (API 31) and older versions.
+     * 
+     * @return A list of permission strings required for Bluetooth scanning, connecting, and advertising.
      */
     fun getRequiredPermissions(): List<String> {
         return if (Build.VERSION.SDK_INT >= Build.VERSION.SDK_INT) { // simplified for now, will refine
@@ -37,6 +40,7 @@ object BluetoothUtils {
 
     /**
      * Opens the system Bluetooth settings screen.
+     * This is an extension function on [Context] that launches the settings activity in a new task.
      */
     fun Context.openBluetoothSettings() {
         val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS).apply {

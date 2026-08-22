@@ -1,4 +1,4 @@
-﻿plugins {
+plugins {
     alias(libs.plugins.android.library)
     id("maven-publish")
     alias(libs.plugins.kotlin.compose)
@@ -36,7 +36,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "ir.amirhesambandegan.easify-android"
                 artifactId = "easify-sensor"
-                version = "2.0.0"
+                version = "2.1.0"
             }
         }
     }

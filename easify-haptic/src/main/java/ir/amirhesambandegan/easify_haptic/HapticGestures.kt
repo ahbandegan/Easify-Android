@@ -5,8 +5,13 @@ import android.content.Context
 /**
  * Tracks the progress of a pull/drag gesture (e.g., Pull to Refresh)
  * and fires haptic feedback at specific thresholds.
+ *
+ * @property context The context used for dispatching haptic feedback.
  */
 class PullHapticTracker(private val context: Context) {
+    /**
+     * Internal tracker for the last crossed progress threshold.
+     */
     private var lastTickThreshold = 0f
 
     /**
@@ -27,6 +32,9 @@ class PullHapticTracker(private val context: Context) {
         }
     }
     
+    /**
+     * Resets the gesture tracking threshold back to zero.
+     */
     fun reset() {
         lastTickThreshold = 0f
     }

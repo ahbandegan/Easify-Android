@@ -18,10 +18,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.animation.core.*
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
 
 /**
  * A modifier that adds a "bounce" effect when clicked, similar to iOS buttons.
+ *
+ * @param minScale The scale factor to shrink to when pressed. Default is 0.95f.
+ * @param onClick The callback to be invoked when the element is clicked.
+ * @return A [Modifier] with the bounce click effect applied.
  */
 fun Modifier.bounceClick(
     minScale: Float = 0.95f,
@@ -45,6 +53,8 @@ fun Modifier.bounceClick(
 
 /**
  * A modifier that hides the software keyboard when the user taps outside a focused element.
+ * 
+ * @return A [Modifier] that intercepts tap gestures to clear focus and hide the keyboard.
  */
 fun Modifier.hideKeyboardOnTapOutside(): Modifier = composed {
     val focusManager = LocalFocusManager.current
@@ -58,8 +68,9 @@ fun Modifier.hideKeyboardOnTapOutside(): Modifier = composed {
 /**
  * Adds an animated Shimmer effect to the background of a Composable.
  * 
- * @param showShimmer Whether to show the shimmer animation.
- * @param targetColor The highlight color of the shimmer.
+ * @param showShimmer Whether to show the shimmer animation. Default is true.
+ * @param targetColor The highlight color of the shimmer. Default is a semi-transparent white.
+ * @return A [Modifier] with the background shimmer animation applied.
  */
 fun Modifier.shimmer(
     showShimmer: Boolean = true,
@@ -89,4 +100,44 @@ fun Modifier.shimmer(
     )
 
     this.background(brush)
+}
+
+
+/**
+ * Adds a horizontal shaking animation to the composable, typically used to indicate an error state.
+ *
+ * @param isError A boolean flag indicating whether the element should shake. The animation triggers when this becomes true.
+ * @return A [Modifier] with the shaking animation applied.
+ */
+fun Modifier.shake(isError: Boolean): Modifier = composed {
+    var shakeState by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isError) {
+        if (isError) {
+            shakeState = true
+        }
+    }
+
+    val offset by animateFloatAsState(
+        targetValue = if (shakeState) 0f else 0f,
+        animationSpec = keyframes {
+            durationMillis = 400
+            0f at 0
+            (-15f) at 50
+            15f at 100
+            (-10f) at 150
+            10f at 200
+            (-5f) at 250
+            5f at 300
+            0f at 400
+        },
+        finishedListener = { shakeState = false },
+        label = "ShakeAnimation"
+    )
+
+    this.then(
+        Modifier.graphicsLayer {
+            translationX = offset
+        }
+    )
 }

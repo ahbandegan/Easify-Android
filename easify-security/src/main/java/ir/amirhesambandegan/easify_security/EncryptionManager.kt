@@ -15,10 +15,24 @@ import javax.crypto.spec.GCMParameterSpec
  */
 object EncryptionManager {
 
+    /**
+     * The alias name used to store keys in the Android Keystore.
+     */
     private const val ANDROID_KEYSTORE = "AndroidKeyStore"
+    
+    /**
+     * The encryption transformation string used for Cipher initialization.
+     */
     private const val TRANSFORMATION = "AES/GCM/NoPadding"
+    
+    /**
+     * The size of the Initialization Vector (IV) in bytes for GCM.
+     */
     private const val IV_SIZE = 12 // 12 bytes for GCM IV
 
+    /**
+     * The KeyStore instance initialized for the AndroidKeyStore provider.
+     */
     private val keyStore: KeyStore = KeyStore.getInstance(ANDROID_KEYSTORE).apply {
         load(null)
     }

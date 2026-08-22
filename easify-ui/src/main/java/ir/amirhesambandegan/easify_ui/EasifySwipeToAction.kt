@@ -22,6 +22,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 
+/**
+ * A composable that provides horizontal swipe-to-action functionality for its content,
+ * supporting distinct actions and visuals for left and right swipes.
+ *
+ * @param modifier The [Modifier] to be applied to the swipeable box.
+ * @param onSwipeRight An optional callback invoked when the user swipes from start to end (left to right).
+ * @param onSwipeLeft An optional callback invoked when the user swipes from end to start (right to left).
+ * @param rightIcon The icon to display when swiping from start to end. Default is [Icons.Default.Delete].
+ * @param leftIcon The icon to display when swiping from end to start. Default is [Icons.Default.Email].
+ * @param rightBackgroundColor The background color shown during a start-to-end swipe. Default is the error container color.
+ * @param leftBackgroundColor The background color shown during an end-to-start swipe. Default is the secondary container color.
+ * @param rightIconColor The color of the icon shown during a start-to-end swipe. Default is the on-error container color.
+ * @param leftIconColor The color of the icon shown during an end-to-start swipe. Default is the on-secondary container color.
+ * @param content The composable content that can be swiped.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EasifySwipeToAction(

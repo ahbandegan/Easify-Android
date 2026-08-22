@@ -17,12 +17,29 @@ import java.util.UUID
 @SuppressLint("MissingPermission")
 class BluetoothAdvertiser(context: Context) {
     
+    /**
+     * The system [BluetoothManager] retrieved from the context.
+     */
     private val bluetoothManager = context.getSystemService(BluetoothManager::class.java)
+
+    /**
+     * The [android.bluetooth.le.BluetoothLeAdvertiser] used for broadcasting BLE signals.
+     */
     private val advertiser = bluetoothManager?.adapter?.bluetoothLeAdvertiser
     
+    /**
+     * Internal mutable state tracking whether advertising is currently active.
+     */
     private val _isAdvertising = MutableStateFlow(false)
+
+    /**
+     * Public observable state flow indicating if the device is currently advertising.
+     */
     val isAdvertising: StateFlow<Boolean> = _isAdvertising
     
+    /**
+     * The callback used to receive advertising status events.
+     */
     private var advertiseCallback: AdvertiseCallback? = null
 
     /**

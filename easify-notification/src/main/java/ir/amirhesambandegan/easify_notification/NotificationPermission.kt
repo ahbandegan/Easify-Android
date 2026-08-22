@@ -11,6 +11,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 
+/**
+ * Remembers and provides the state and control callbacks for handling Android notification permissions in Jetpack Compose.
+ * Handles Android 13+ (API 33, Tiramisu) POST_NOTIFICATIONS permission requests automatically.
+ *
+ * @return A [NotificationPermissionState] instance holding the current permission status and action handlers.
+ */
 @Composable
 fun rememberNotificationPermission(): NotificationPermissionState {
     val context = LocalContext.current
@@ -42,6 +48,12 @@ fun rememberNotificationPermission(): NotificationPermissionState {
     }
 }
 
+/**
+ * Checks whether the POST_NOTIFICATIONS permission is granted on the current device.
+ *
+ * @param context The [Context] used to check the permission status.
+ * @return `true` if permission is granted or not required (pre-Android 13), `false` otherwise.
+ */
 private fun checkPermission(context: Context): Boolean {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         return context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == android.content.pm.PackageManager.PERMISSION_GRANTED
@@ -49,6 +61,13 @@ private fun checkPermission(context: Context): Boolean {
     return true
 }
 
+/**
+ * Represents the state and actions for managing notification permissions.
+ *
+ * @property isGranted Indicates whether notification permission is currently granted.
+ * @property requestPermission Action to request the notification permission from the user.
+ * @property openSettings Action to open the application's notification settings screen.
+ */
 class NotificationPermissionState(
     val isGranted: Boolean,
     val requestPermission: () -> Unit,

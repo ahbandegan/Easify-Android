@@ -6,8 +6,11 @@ import android.net.Uri
 import android.provider.Settings
 
 /**
- * Opens the specific Android App Settings page for this application.
- * Useful for when a permission is permanently denied and the user must enable it manually.
+ * Opens the application details settings screen for this application in the Android system settings.
+ *
+ * This extension function creates an intent with [Settings.ACTION_APPLICATION_DETAILS_SETTINGS] targeting
+ * the current package name, allowing users to manually grant permissions or manage app settings when permissions
+ * have been permanently denied or when direct configuration is required.
  */
 fun Context.openAppSettings() {
     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {

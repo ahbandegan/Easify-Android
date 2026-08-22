@@ -8,6 +8,14 @@ import android.os.Environment
 import android.provider.MediaStore
 import java.io.OutputStream
 
+/**
+ * Saves a given Bitmap image to the device's public gallery (MediaStore) using Scoped Storage.
+ * 
+ * @param bitmap The [Bitmap] image to be saved.
+ * @param filename The display name of the image file (including extension).
+ * @param mimeType The MIME type of the image, defaulting to "image/jpeg".
+ * @return True if the image was successfully saved to the gallery, false otherwise.
+ */
 fun Context.saveImageToGallery(bitmap: Bitmap, filename: String, mimeType: String = "image/jpeg"): Boolean {
     val resolver = contentResolver
     val contentValues = ContentValues().apply {

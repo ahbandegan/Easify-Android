@@ -8,13 +8,22 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
+/**
+ * Utility object for detecting if the user's biometric data has changed
+ * since the last time this check was properly executed.
+ */
 object BiometricChangeDetector {
 
+    /**
+     * The alias used for storing the cryptographic key in the Android Keystore.
+     */
     private const val KEY_ALIAS = "BiometricChangeCheckKey"
 
     /**
      * Checks if a new biometric (fingerprint/face) was added since the last check.
      * Returns true if biometrics were changed.
+     * 
+     * @return True if the biometric data has changed or if the key was invalidated, false otherwise.
      */
     fun hasBiometricChanged(): Boolean {
         try {
@@ -34,6 +43,12 @@ object BiometricChangeDetector {
         }
     }
 
+    /**
+     * Generates a new secret key for the Android Keystore that is tied to biometric enrollment.
+     * If a new biometric is enrolled, this key becomes permanently invalidated.
+     * 
+     * @return A newly generated [SecretKey].
+     */
     private fun generateKey(): SecretKey {
         val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
         keyGenerator.init(

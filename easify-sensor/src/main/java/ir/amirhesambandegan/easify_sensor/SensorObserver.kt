@@ -10,11 +10,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 /**
- * Observes a specific hardware sensor and provides a reactive [Flow] of events.
+ * A utility class that observes a specific hardware sensor and provides a reactive asynchronous [Flow] of its events.
+ * This class abstracts away the traditional [SensorEventListener] implementation, making it easier to integrate sensor data into coroutine-based architectures.
  *
- * @param context The application context.
- * @param sensorType The type of sensor to observe (e.g., [Sensor.TYPE_ACCELEROMETER]).
- * @param samplingPeriod The rate at which sensor events are delivered (e.g., [SensorManager.SENSOR_DELAY_UI]).
+ * @property context The application context used to access the [SensorManager].
+ * @property sensorType The integer type of the sensor to observe (e.g., [Sensor.TYPE_ACCELEROMETER]).
+ * @property samplingPeriod The requested sampling rate for sensor events (e.g., [SensorManager.SENSOR_DELAY_UI]).
  */
 class SensorObserver(
     private val context: Context,
@@ -25,8 +26,9 @@ class SensorObserver(
     private val sensor = sensorManager.getDefaultSensor(sensorType)
 
     /**
-     * A [Flow] of [EasifySensorEvent]s from the hardware sensor.
-     * Automatically registers/unregisters the listener based on flow collection.
+     * A cold [Flow] that emits [EasifySensorEvent]s as they are received from the hardware sensor.
+     * The underlying sensor listener is automatically registered when the flow is collected and unregistered when the collection is cancelled or closed.
+     * If the requested sensor is not available on the device, the flow completes immediately without emitting any values.
      */
     val sensorData: Flow<EasifySensorEvent> = callbackFlow {
         if (sensor == null) {

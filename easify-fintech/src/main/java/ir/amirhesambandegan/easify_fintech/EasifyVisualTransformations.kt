@@ -5,7 +5,17 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 
+/**
+ * A [VisualTransformation] that formats user input into a standard 16-digit bank card format
+ * by inserting a hyphen (-) after every 4 digits.
+ */
 class CardNumberVisualTransformation : VisualTransformation {
+    /**
+     * Applies the formatting to the given [AnnotatedString].
+     *
+     * @param text The input string representing the card number digits.
+     * @return A [TransformedText] containing the formatted card number and the corresponding offset mapping.
+     */
     override fun filter(text: AnnotatedString): TransformedText {
         val trimmed = if (text.text.length >= 16) text.text.substring(0..15) else text.text
         var out = ""
@@ -33,7 +43,17 @@ class CardNumberVisualTransformation : VisualTransformation {
     }
 }
 
+/**
+ * A [VisualTransformation] that formats numerical price input by adding commas (,)
+ * every three digits to separate thousands.
+ */
 class PriceVisualTransformation : VisualTransformation {
+    /**
+     * Applies the formatting to the given [AnnotatedString].
+     *
+     * @param text The input string containing the digits of the price.
+     * @return A [TransformedText] containing the comma-separated formatted price and the corresponding offset mapping.
+     */
     override fun filter(text: AnnotatedString): TransformedText {
         val originalText = text.text.filter { it.isDigit() }
         val formattedText = if (originalText.isNotEmpty()) {
@@ -58,7 +78,17 @@ class PriceVisualTransformation : VisualTransformation {
     }
 }
 
+/**
+ * A [VisualTransformation] that formats a 4-digit input into a standard expiration date format
+ * (MM/YY) by inserting a slash (/) after the first two digits.
+ */
 class ExpirationDateVisualTransformation : VisualTransformation {
+    /**
+     * Applies the formatting to the given [AnnotatedString].
+     *
+     * @param text The input string representing the expiration date digits.
+     * @return A [TransformedText] containing the formatted expiration date and the corresponding offset mapping.
+     */
     override fun filter(text: AnnotatedString): TransformedText {
         val trimmed = if (text.text.length >= 4) text.text.substring(0..3) else text.text
         var out = ""

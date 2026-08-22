@@ -17,6 +17,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * A customizable OTP (One Time Password) input component consisting of multiple distinct character boxes.
+ *
+ * @param value The current text value of the OTP input.
+ * @param onValueChange The callback invoked when the value changes.
+ * @param modifier The [Modifier] to be applied to the entire input component.
+ * @param length The total number of digits/characters in the OTP. Default is 4.
+ * @param isError Indicates whether the input is in an error state, triggering shake animations and error colors. Default is false.
+ * @param boxSize The size (width and height) of each individual character box. Default is 56.dp.
+ * @param boxSpacing The horizontal spacing between the individual character boxes. Default is 8.dp.
+ * @param activeColor The border color of the box currently focused or active. Default is the primary color from [MaterialTheme.colorScheme].
+ * @param inactiveColor The border color of boxes that are inactive/unfocused. Default is [Color.Gray].
+ * @param errorColor The border color used when [isError] is true. Default is the error color from [MaterialTheme.colorScheme].
+ * @param onComplete An optional callback invoked when the full OTP length is reached.
+ */
 @Composable
 fun EasifyOtpInput(
     value: String,

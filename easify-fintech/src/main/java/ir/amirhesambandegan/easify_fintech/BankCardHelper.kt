@@ -2,6 +2,8 @@ package ir.amirhesambandegan.easify_fintech
 
 /**
  * Validates a 16-digit bank card number using the Luhn algorithm.
+ *
+ * @return `true` if the card number is valid according to the Luhn algorithm, `false` otherwise.
  */
 fun String.isValidCardNumber(): Boolean {
     val cleanNumber = this.filter { it.isDigit() }
@@ -23,6 +25,8 @@ fun String.isValidCardNumber(): Boolean {
 
 /**
  * Formats a digits-only string into a card number format (XXXX XXXX XXXX XXXX).
+ *
+ * @return A formatted string representing the card number with spaces every 4 digits.
  */
 fun String.formatCardNumber(): String {
     val clean = this.filter { it.isDigit() }
@@ -31,7 +35,8 @@ fun String.formatCardNumber(): String {
 
 /**
  * Returns the bank name based on the 6-digit BIN (Bank Identification Number).
- * Returns null if the BIN is not recognized.
+ *
+ * @return The bank name as a `String` if the BIN is recognized, `null` otherwise.
  */
 fun String.getBankName(): String? {
     if (this.length < 6) return null

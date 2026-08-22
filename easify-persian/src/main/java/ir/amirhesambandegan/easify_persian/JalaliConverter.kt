@@ -5,13 +5,24 @@ import java.util.Date
 
 /**
  * A data class representing a Jalali (Persian) date.
+ *
+ * @property year The Jalali year (e.g., 1403).
+ * @property month The Jalali month (1 to 12).
+ * @property day The day of the Jalali month (1 to 31).
  */
 data class JalaliDate(val year: Int, val month: Int, val day: Int) {
+    /**
+     * Returns a string representation of the Jalali date in the format "YYYY/MM/DD".
+     *
+     * @return Formatted date string.
+     */
     override fun toString(): String = String.format("%04d/%02d/%02d", year, month, day)
 }
 
 /**
  * Converts a Gregorian [Date] to a [JalaliDate].
+ *
+ * @return A [JalaliDate] instance corresponding to this Gregorian date.
  */
 fun Date.toJalali(): JalaliDate {
     val calendar = Calendar.getInstance()
@@ -25,6 +36,8 @@ fun Date.toJalali(): JalaliDate {
 
 /**
  * Converts a [JalaliDate] to a Gregorian [Date].
+ *
+ * @return A [Date] instance corresponding to this Jalali date.
  */
 fun JalaliDate.toGregorian(): Date {
     val greg = JalaliConverter.jalaliToGregorian(year, month, day)
@@ -33,9 +46,27 @@ fun JalaliDate.toGregorian(): Date {
     return calendar.time
 }
 
+/**
+ * Internal utility object containing logic for converting between Gregorian and Jalali dates.
+ */
 private object JalaliConverter {
+    /**
+     * A data class representing a Gregorian date internally used by the converter.
+     *
+     * @property year The Gregorian year.
+     * @property month The Gregorian month (1 to 12).
+     * @property day The day of the Gregorian month (1 to 31).
+     */
     class GregorianDate(val year: Int, val month: Int, val day: Int)
 
+    /**
+     * Converts a specific Gregorian date to a Jalali date.
+     *
+     * @param gy The Gregorian year.
+     * @param gm The Gregorian month.
+     * @param gd The day of the Gregorian month.
+     * @return A [JalaliDate] representing the equivalent Jalali date.
+     */
     fun gregorianToJalali(gy: Int, gm: Int, gd: Int): JalaliDate {
         val gDaysInMonth = intArrayOf(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
         var gDays = 365 * (gy - 1) + (gy - 1) / 4 - (gy - 1) / 100 + (gy - 1) / 400 + gd
@@ -65,6 +96,14 @@ private object JalaliConverter {
         return JalaliDate(jy, jm, jd)
     }
 
+    /**
+     * Converts a specific Jalali date to a Gregorian date.
+     *
+     * @param jy The Jalali year.
+     * @param jm The Jalali month.
+     * @param jd The day of the Jalali month.
+     * @return A [GregorianDate] representing the equivalent Gregorian date.
+     */
     fun jalaliToGregorian(jy: Int, jm: Int, jd: Int): GregorianDate {
         val jy2 = jy - 979
         var jDays = 365 * jy2 + (jy2 / 33) * 8 + (jy2 % 33 + 3) / 4

@@ -5,5 +5,6 @@ import androidx.datastore.preferences.preferencesDataStore
 
 /**
  * Extension property to provide a single instance of DataStore across the application.
+ * Lazily instantiates a DataStore for preferences named "pref".
  */
 val Context.dataStore by preferencesDataStore("pref")

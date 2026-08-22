@@ -15,6 +15,14 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
+/**
+ * A Jetpack Compose in-app banner component that slides in from the top and automatically dismisses after a delay.
+ *
+ * @param isVisible Controls whether the banner is visible or hidden.
+ * @param title The title text to display on the banner.
+ * @param message The description or message text to display on the banner.
+ * @param onDismiss Callback invoked when the banner duration elapses and it needs to be dismissed.
+ */
 @Composable
 fun InAppBanner(
     isVisible: Boolean,

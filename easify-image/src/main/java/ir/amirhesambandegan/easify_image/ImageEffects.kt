@@ -9,6 +9,11 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 
+/**
+ * Converts the current [Bitmap] to a grayscale (black and white) image.
+ *
+ * @return A new [Bitmap] with the grayscale effect applied.
+ */
 fun Bitmap.toGrayscale(): Bitmap {
     val result = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(result)
@@ -20,6 +25,12 @@ fun Bitmap.toGrayscale(): Bitmap {
     return result
 }
 
+/**
+ * Crops the current [Bitmap] into a circular shape.
+ * The resulting image will be a square [Bitmap] with dimensions equal to the shortest side of the original.
+ *
+ * @return A new circular [Bitmap].
+ */
 fun Bitmap.cropCircle(): Bitmap {
     val size = Math.min(this.width, this.height)
     val result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
@@ -38,6 +49,12 @@ fun Bitmap.cropCircle(): Bitmap {
     return result
 }
 
+/**
+ * Applies a fast blur effect to the current [Bitmap] by downscaling and upscaling it.
+ * This is a simple and fast approach suitable for basic blurring without complex algorithms.
+ *
+ * @return A new blurred [Bitmap].
+ */
 fun Bitmap.fastBlur(): Bitmap {
     // A simple, fast downscale blur for cross-compatibility
     val scaleFactor = 0.1f

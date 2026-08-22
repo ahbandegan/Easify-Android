@@ -7,26 +7,58 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.UUID
 
+/**
+ * Represents the current connection state of a Bluetooth device.
+ */
 enum class ConnectionState {
-    DISCONNECTED, CONNECTING, CONNECTED, DISCONNECTING
+    /** The device is not connected. */
+    DISCONNECTED, 
+    /** A connection attempt is in progress. */
+    CONNECTING, 
+    /** The device is successfully connected. */
+    CONNECTED, 
+    /** The connection is currently being terminated. */
+    DISCONNECTING
 }
 
 /**
  * Manages GATT (Generic Attribute Profile) connections and operations for a single device.
  * Eliminates the painful boilerplate of BluetoothGattCallback.
+ * 
+ * @property context The application or activity context.
  */
 @SuppressLint("MissingPermission")
 class BluetoothConnectionManager(
     private val context: Context
 ) {
+    /**
+     * The active [BluetoothGatt] client instance.
+     */
     private var gatt: BluetoothGatt? = null
     
+    /**
+     * Internal state flow tracking the current connection state.
+     */
     private val _connectionState = MutableStateFlow(ConnectionState.DISCONNECTED)
+
+    /**
+     * Public observable state flow for the connection state.
+     */
     val connectionState: StateFlow<ConnectionState> = _connectionState
 
+    /**
+     * Internal state flow maintaining the list of discovered GATT services.
+     */
     private val _discoveredServices = MutableStateFlow<List<BluetoothGattService>>(emptyList())
+
+    /**
+     * Public observable state flow for the discovered GATT services.
+     */
     val discoveredServices: StateFlow<List<BluetoothGattService>> = _discoveredServices
 
+    /**
+     * The callback that handles GATT connection state changes and service discovery.
+     */
     private val gattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
             when (newState) {

@@ -9,8 +9,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.delay
 
 /**
- * A timer that ticks only when the lifecycle is in the given state (default RESUMED).
- * It automatically pauses when the user leaves the screen, and resumes when they return.
+ * A composable timer that ticks at a specified interval, but only when the lifecycle is in the specified active state.
+ *
+ * It automatically suspends execution when the user leaves the screen (or the lifecycle state falls below the
+ * specified [activeState]) and resumes when the screen becomes active again.
+ *
+ * @param intervalMillis The time interval in milliseconds between consecutive ticks.
+ * @param activeState The minimum [Lifecycle.State] required for the timer to tick. Defaults to [Lifecycle.State.RESUMED].
+ * @param onTick The callback to execute on every tick of the timer.
  */
 @Composable
 fun LifecycleTimer(
