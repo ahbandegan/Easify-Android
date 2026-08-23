@@ -2,7 +2,7 @@
 
 [![](https://jitpack.io/v/ahbandegan/Easify-Android.svg)](https://jitpack.io/#ahbandegan/Easify-Android)
 
-**Official Documentation:** [easify-document.netlify.app](https://easify-document.netlify.app/)
+**Official Documentation:** [https://ahbandegan.github.io/Easify-Android-docuement](https://ahbandegan.github.io/Easify-Android-docuement)
 
 **English Documentation** | [مستندات فارسی](./README-fa.md)
 

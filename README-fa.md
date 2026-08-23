@@ -2,7 +2,7 @@
 
 [![](https://jitpack.io/v/ahbandegan/Easify-Android.svg)](https://jitpack.io/#ahbandegan/Easify-Android)
 
-[**مستندات رسمی و کامل**](https://easify-document.netlify.app/) | [English Documentation](./README.md) | **مستندات فارسی**
+[**مستندات رسمی و کامل**](https://ahbandegan.github.io/Easify-Android-docuement) | [English Documentation](./README.md) | **مستندات فارسی**
 
 **EasifyAndroid** یک کتابخانه قدرتمند، ماژولار و آماده‌ی استفاده برای اندروید است که برای حذف کدهای تکراری و ساده‌سازی کارهای پیچیده طراحی شده است. 
 
