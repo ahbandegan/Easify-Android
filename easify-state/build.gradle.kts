@@ -30,14 +30,15 @@ android {
     }
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("release") {
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "ir.amirhesambandegan.easify-android"
+            artifactId = "easify-state"
+            version = "2.2.0"
+
+            afterEvaluate {
                 from(components["release"])
-                groupId = "ir.amirhesambandegan.easify-android"
-                artifactId = "easify-state"
-                version = "2.2.0"
             }
         }
     }
