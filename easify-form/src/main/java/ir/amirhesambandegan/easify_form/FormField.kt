@@ -25,10 +25,12 @@ class FormField(
      * The current value of the field. Setting this value triggers the [inputFilter],
      * updates the [isDirty] flag, and clears any existing validation error.
      */
-    var value by mutableStateOf(initialValue)
+    private val _value = mutableStateOf(initialValue)
+    var value: String
+        get() = _value.value
         set(newValue) {
             val filtered = inputFilter?.invoke(newValue) ?: newValue
-            field = filtered
+            _value.value = filtered
             isDirty = filtered != initialValue
             error = null // Clear error on typing
         }

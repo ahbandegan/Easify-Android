@@ -5,9 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,8 +26,8 @@ import androidx.compose.ui.unit.dp
  * @param modifier The [Modifier] to be applied to the swipeable box.
  * @param onSwipeRight An optional callback invoked when the user swipes from start to end (left to right).
  * @param onSwipeLeft An optional callback invoked when the user swipes from end to start (right to left).
- * @param rightIcon The icon to display when swiping from start to end. Default is [Icons.Default.Delete].
- * @param leftIcon The icon to display when swiping from end to start. Default is [Icons.Default.Email].
+ * @param rightIcon The optional icon to display when swiping from start to end. Default is null.
+ * @param leftIcon The optional icon to display when swiping from end to start. Default is null.
  * @param rightBackgroundColor The background color shown during a start-to-end swipe. Default is the error container color.
  * @param leftBackgroundColor The background color shown during an end-to-start swipe. Default is the secondary container color.
  * @param rightIconColor The color of the icon shown during a start-to-end swipe. Default is the on-error container color.
@@ -43,8 +40,8 @@ fun EasifySwipeToAction(
     modifier: Modifier = Modifier,
     onSwipeRight: (() -> Unit)? = null,
     onSwipeLeft: (() -> Unit)? = null,
-    rightIcon: ImageVector = Icons.Default.Delete,
-    leftIcon: ImageVector = Icons.Default.Email,
+    rightIcon: ImageVector? = null,
+    leftIcon: ImageVector? = null,
     rightBackgroundColor: Color = MaterialTheme.colorScheme.errorContainer,
     leftBackgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     rightIconColor: Color = MaterialTheme.colorScheme.onErrorContainer,

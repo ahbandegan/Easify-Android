@@ -59,7 +59,7 @@ object ChannelManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(channelId, channelName, importance).apply {
                 this.description = description
-                this.groupId = groupId
+                this.group = groupId
                 this.enableLights(enableLights)
                 this.lightColor = lightColor
                 this.enableVibration(enableVibration)
