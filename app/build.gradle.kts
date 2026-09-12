@@ -34,7 +34,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "ir.amirhesambandegan"
                 artifactId = "easify-android"
-                version = "2.1.0"
+                version = "2.2.0"
 
 dependencies {
     api(libs.kotlinx.coroutines.android)

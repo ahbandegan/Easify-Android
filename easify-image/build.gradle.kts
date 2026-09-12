@@ -39,7 +39,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "ir.amirhesambandegan.easify-android"
                 artifactId = "easify-image"
-                version = "2.1.0"
+                version = "2.2.0"
             }
         }
     }

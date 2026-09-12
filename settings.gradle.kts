@@ -51,3 +51,4 @@ include(
     ":easify-camera"
 )
 include(":easify-android")
+include(":easify-state")
