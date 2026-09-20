@@ -6,7 +6,7 @@
 
 **EasifyAndroid** یک کتابخانه قدرتمند، ماژولار و آماده‌ی استفاده برای اندروید است که برای حذف کدهای تکراری و ساده‌سازی کارهای پیچیده طراحی شده است. 
 
-از نسخه ۲.۰.۰ به بعد، این کتابخانه **۱۰۰٪ ماژولار** شده است! شما دیگر نیازی ندارید کل کتابخانه را به پروژه خود اضافه کنید؛ می‌توانید دقیقاً فقط بخش‌هایی که نیاز دارید را انتخاب کنید.
+از نسخه ۳.۰.۰ به بعد، این کتابخانه **۱۰۰٪ ماژولار** شده است! شما دیگر نیازی ندارید کل کتابخانه را به پروژه خود اضافه کنید؛ می‌توانید دقیقاً فقط بخش‌هایی که نیاز دارید را انتخاب کنید.
 
 ---
 
@@ -31,7 +31,7 @@ dependencyResolutionManagement {
 اگر می‌خواهید به تمام قابلیت‌های این کتابخانه به صورت همزمان دسترسی داشته باشید، کافیست پکیج اصلی را اضافه کنید:
 ```kotlin
 dependencies {
-    implementation("com.github.ahbandegan.Easify-Android:easify-android:2.2.0")
+    implementation("com.github.ahbandegan.Easify-Android:easify-android:3.0.0")
 }
 ```
 
@@ -40,7 +40,7 @@ dependencies {
 ```kotlin
 dependencies {
     // به جای <module-name> نام یکی از ماژول‌های لیست زیر را قرار دهید
-    implementation("com.github.ahbandegan.Easify-Android:<module-name>:2.2.0")
+    implementation("com.github.ahbandegan.Easify-Android:<module-name>:3.0.0")
 }
 ```
 
@@ -50,12 +50,12 @@ dependencies {
 
 ## 📦 راهنمای ماژول‌ها
 
-در این بخش راهنمای دقیق و مثال‌های کدهای تمامی ۲۰ ماژول قرار گرفته است. برای مشاهده روی نام هر ماژول کلیک کنید!
+در این بخش راهنمای دقیق و مثال‌های کدهای تمامی ۲۳ ماژول مستقل قرار گرفته است. برای مشاهده روی نام هر ماژول کلیک کنید!
 
 <details>
 <summary><b>1. 🔐 easify-security (رمزنگاری و محافظت از صفحه)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-security:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-security:3.0.0")`
 
 جلوگیری از اسکرین‌شات و ضبط صفحه نمایش، به همراه رمزنگاری پیشرفته سخت‌افزاری AES-GCM.
 
@@ -73,7 +73,7 @@ val decrypted = EasifyCrypto.decrypt(encrypted)
 <details>
 <summary><b>2. 🛡️ easify-permission (دسترسی‌ها در کامپوز)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-permission:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-permission:3.0.0")`
 
 مدیریت کاملاً خودکار دسترسی‌ها (Permissions) در Jetpack Compose بدون نیاز به کدهای تکراری.
 
@@ -93,7 +93,7 @@ Button(onClick = { permissionLauncher.launch() }) {
 <details>
 <summary><b>3. 👆 easify-biometric (اثر انگشت و تشخیص چهره)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-biometric:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-biometric:3.0.0")`
 
 راه‌اندازی فوق سریع احراز هویت بیومتریک در برنامه.
 
@@ -114,7 +114,7 @@ Button(onClick = { biometric.authenticate() }) {
 <details>
 <summary><b>4. 🌐 easify-network (مدیریت Ktor و آپلود فایل)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-network:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-network:3.0.0")`
 
 نسخه بهینه‌شده و امن Ktor 3.x با مدیریت خودکار توکن‌ها و آپلود راحت فایل‌ها همراه با نمایش درصد پیشرفت.
 
@@ -134,7 +134,7 @@ EasifyNetwork.uploadMultipart(
 <details>
 <summary><b>5. 🇮🇷 easify-persian (تاریخ شمسی و اعداد فارسی)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-persian:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-persian:3.0.0")`
 
 تبدیل تقویم میلادی به شمسی، تبدیل اعداد انگلیسی به فارسی و حروف‌نویسی اعداد.
 
@@ -153,7 +153,7 @@ val words = 1500000L.toPersianWords() // خروجی: یک میلیون و پان
 <details>
 <summary><b>6. 💳 easify-fintech (بانک‌ها و اعتبارسنجی ایران)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-fintech:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-fintech:3.0.0")`
 
 اعتبارسنجی کد ملی، شناسایی نام بانک از روی کارت بانکی و اعتبارسنجی شماره شبا.
 
@@ -172,7 +172,7 @@ val isValidSheba = "IR123...".isValidSheba()
 <details>
 <summary><b>7. 📳 easify-sensor (سنسورهای سخت‌افزاری)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-sensor:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-sensor:3.0.0")`
 
 دسترسی واکنش‌گرا و ساده به تمام سنسورهای گوشی (شتاب‌سنج، مجاورت و غیره).
 
@@ -188,7 +188,7 @@ if (isClose) { Text("گوشی نزدیک گوش شماست!") }
 <details>
 <summary><b>8. 🔵 easify-bluetooth (اسکنر بلوتوث)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-bluetooth:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-bluetooth:3.0.0")`
 
 اسکنر مدرن BLE که پیچیدگی‌های دسترسی بلوتوث در اندروید ۱۲ به بالا را مدیریت می‌کند.
 
@@ -205,7 +205,7 @@ Button(onClick = { btScanner.startScanning() }) {
 <details>
 <summary><b>9. 📍 easify-location (موقعیت‌یابی زنده)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-location:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-location:3.0.0")`
 
 ردیابی موقعیت مکانی زنده تنها با یک خط کد و مدیریت خودکار دسترسی‌ها.
 
@@ -219,20 +219,42 @@ locationState?.let { loc ->
 </details>
 
 <details>
-<summary><b>10. 🎨 easify-ui (افکت‌ها و ابزارهای رابط کاربری)</b></summary>
+<summary><b>10. 🎨 easify-ui (افکت‌های UI، انیمیشن تغییر تم و سازگاری با CMP)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-ui:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-ui:3.0.0")`
 
-ابزارهایی مانند افکت کلیک به سبک iOS، افکت بارگذاری Shimmer و بستن خودکار کیبورد.
+ابزارهای مدرن رابط کاربری شامل انیمیشن تغییر تم دایره‌ای (Circular Reveal)، جسچر Swipe to Action، افکت کلیک به سبک iOS، افکت بارگذاری Shimmer و بستن خودکار کیبورد. کاملاً سازگار با Compose Multiplatform (Android, iOS, Desktop, Web).
 
 ```kotlin
-// افکت کلیک ارتجاعی (Bounce)
+// ۱. انیمیشن دایره‌ای تغییر تم (Circular Reveal)
+var isDark by remember { mutableStateOf(false) }
+var clickOffset by remember { mutableStateOf(Offset.Zero) }
+
+EasifyThemeContainer(
+    darkTheme = isDark,
+    animationType = ThemeAnimationType.CIRCULAR_REVEAL,
+    epicenter = clickOffset,
+    lightColorScheme = lightColorScheme(),
+    darkColorScheme = darkColorScheme()
+) {
+    // محتوای برنامه
+}
+
+// ۲. قابلیت کشیدن برای انجام عملیات (Swipe to Action)
+EasifySwipeToAction(
+    onSwipeRight = { /* آرشیو یا اکشن راست */ },
+    onSwipeLeft = { /* حذف یا اکشن چپ */ }
+) {
+    Text("برای نمایش اکشن‌ها به چپ یا راست بکشید")
+}
+
+// ۳. افکت کلیک ارتجاعی (Bounce)
 Card(modifier = Modifier.bounceClick { /* اکشن */ }) { ... }
 
-// افکت Shimmer (در حال بارگذاری)
+// ۴. افکت Shimmer (در حال بارگذاری)
 Box(modifier = Modifier.size(100.dp).shimmer(isLoading = true))
 
-// بستن کیبورد با لمس بیرون کادر
+// ۵. بستن کیبورد با لمس بیرون کادر
 Column(modifier = Modifier.hideKeyboardOnTapOutside()) { ... }
 ```
 </details>
@@ -240,7 +262,7 @@ Column(modifier = Modifier.hideKeyboardOnTapOutside()) { ... }
 <details>
 <summary><b>11. 📝 easify-form (مدیریت فرم‌ها)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-form:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-form:3.0.0")`
 
 مدیریت وضعیت فرم‌ها در کامپوز با پشتیبانی از اعتبارسنجی خودکار.
 
@@ -261,7 +283,7 @@ Button(onClick = { if(form.validate()) { /* ثبت اطلاعات */ } }) { Text
 <details>
 <summary><b>12. 📳 easify-haptic (بازخورد لرزشی هوشمند)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-haptic:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-haptic:3.0.0")`
 
 ایجاد بازخوردهای لرزشی معنادار (موفقیت، خطا، کلیک) به سادگی هر چه تمام‌تر.
 
@@ -280,7 +302,7 @@ Button(onClick = {
 <details>
 <summary><b>13. 🔔 easify-notification (نوتیفیکیشن‌های ساده)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-notification:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-notification:3.0.0")`
 
 ساخت و مدیریت آسان کانال‌های نوتیفیکیشن و نمایش اعلان‌ها.
 
@@ -297,7 +319,7 @@ EasifyNotification.show(
 <details>
 <summary><b>14. 📂 easify-file (انتخابگر فایل و تصویر)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-file:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-file:3.0.0")`
 
 رابط کاربری بصری و ساده برای انتخاب عکس، ویدیو یا فایل.
 
@@ -314,7 +336,7 @@ Button(onClick = { filePicker.launch() }) { Text("انتخاب عکس") }
 <details>
 <summary><b>15. 🗄️ easify-storage (ذخیره‌سازی امن DataStore)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-storage:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-storage:3.0.0")`
 
 ترکیبی از Preferences DataStore و `easify-security` برای ذخیره کاملاً امن و رمزنگاری‌شده داده‌ها.
 
@@ -332,7 +354,7 @@ val token = storage.getSecure("auth_token")
 <details>
 <summary><b>16. ⚙️ easify-context (ابزارهای سیستم و اینتنت)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-context:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-context:3.0.0")`
 
 ابزارهایی برای کپی در کلیپ‌بورد، اشتراک‌گذاری متن و باز کردن تنظیمات سیستم.
 
@@ -346,7 +368,7 @@ context.openAppSettings()
 <details>
 <summary><b>17. 🔄 easify-lifecycle (چرخه حیات در کامپوز)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-lifecycle:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-lifecycle:3.0.0")`
 
 پوشش‌های آسان برای استفاده از LifeCycle درون کدهای Jetpack Compose.
 
@@ -364,7 +386,7 @@ useLifecycleEvent { event ->
 <details>
 <summary><b>18. ✅ easify-validation (اعتبارسنجی با Regex)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-validation:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-validation:3.0.0")`
 
 مجموعه‌ای از الگوهای رایج برای اعتبارسنجی عبارات متنی.
 
@@ -378,7 +400,7 @@ val passwordStrong = "Aa!123456".isStrongPassword()
 <details>
 <summary><b>19. 🖼️ easify-image (پردازش تصاویر)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-image:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-image:3.0.0")`
 
 تغییر اندازه و فشرده‌سازی بسیار ساده عکس‌ها قبل از آپلود.
 
@@ -393,7 +415,7 @@ val optimizedBitmap = originalBitmap.compress(
 <details>
 <summary><b>20. 🔢 easify-format (قالب‌بندی رشته‌ها)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-format:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-format:3.0.0")`
 
 جداکننده سه‌رقمی قیمت‌ها و تبدیل زمان به فرمت قابل خواندن.
 
@@ -406,7 +428,7 @@ val time = 3661000L.formatDuration()   // خروجی: "01:01:01"
 <details>
 <summary><b>21. 📷 easify-camera (مدیریت دوربین CameraX و اسکنر بارکد/QR)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-camera:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-camera:3.0.0")`
 
 پیش‌نمایش آسان دوربین با CameraX، عکاسی و اسکن کدهای QR و بارکد با MLKit در کامپوز.
 
@@ -423,7 +445,7 @@ CameraPreview(
 <details>
 <summary><b>22. ⚡ easify-state (معماری کامل Flutter BLoC و Cubit برای Jetpack Compose)</b></summary>
 
-**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-state:2.2.0")`
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-state:3.0.0")`
 
 پیاده‌سازی کامل و قدرتمند الگوی محبوب Flutter BLoC در دنیای اندروید و کامپوز. شامل `Bloc`، `Cubit`، `BlocViewModel`، ترنسفورمرهای ۴گانه همزمانی رویدادها (`sequential`, `restartable`, `droppable`, `concurrent`) و اکستنشن‌های شگفت‌انگیز `read` و `watch` در کانتکست.
 
@@ -458,10 +480,59 @@ fun CounterScreen() {
 ```
 </details>
 
+<details>
+<summary><b>23. 🔑 easify-auth (ورود با گوگل، پیامک OTP و احراز هویت OAuth 2.0 PKCE)</b></summary>
+
+**کد نصب:** `implementation("com.github.ahbandegan.Easify-Android:easify-auth:3.0.0")`
+
+سیستم احراز هویت مدرن اندروید با Google Credential Manager (ورود با یک لمس One-Tap)، دریافت خودکار کد پیامک OTP و SMS User Consent API، و اتصال امن به پروتکل OAuth 2.0 / 2.1 با استاندارد PKCE (RFC 7636) و جلوگیری از حملات CSRF.
+
+```kotlin
+// ۱. ورود با گوگل با Google Credential Manager
+val authClient = rememberEasifyAuth()
+
+Button(onClick = {
+    coroutineScope.launch {
+        when (val result = authClient.signInWithGoogle(serverClientId = "YOUR_CLIENT_ID")) {
+            is AuthResult.Success -> println("خوش آمدید: ${result.data.displayName} (${result.data.email})")
+            is AuthResult.Error -> println("خطا: ${result.message}")
+            AuthResult.Cancelled -> println("کاربر لغو کرد")
+        }
+    }
+}) {
+    Text("ورود با حساب گوگل")
+}
+
+// ۲. افکت دریافت خودکار کد پیامک (OTP) در کامپوز
+var otpCode by remember { mutableStateOf("") }
+SmsOtpEffect(senderPhoneNumber = "1000...") { otp ->
+    otpCode = otp // پشتیبانی کامل و خودکار از ارقام فارسی و انگلیسی
+}
+
+// ۳. ورود با گیت‌هاب یا سایر ارائه‌دهندگان از طریق OAuth 2.0 با PKCE
+Button(onClick = {
+    coroutineScope.launch {
+        val result = authClient.signInWithOAuthAndExchange(
+            provider = OAuthProvider.GITHUB,
+            clientId = "YOUR_GITHUB_CLIENT_ID",
+            clientSecret = "YOUR_GITHUB_CLIENT_SECRET",
+            redirectUri = "myapp://oauth-callback",
+            scopes = listOf("read:user", "user:email")
+        )
+        if (result is AuthResult.Success) {
+            println("توکن دسترسی: ${result.data.accessToken}")
+        }
+    }
+}) {
+    Text("ورود با گیت‌هاب")
+}
+```
+</details>
+
 ---
 
 ## 🤝 مشارکت
 ما از مشارکت شما استقبال می‌کنیم! اگر ایده‌ای برای قابلیت‌های جدید "Easify" دارید، لطفاً با ثبت Issue یا Pull Request به ما اطلاع دهید.
 
 ## ⚖️ لایسنس
-لایسنس MIT. استفاده شخصی و تجاری کاملاً رایگان است.
+این پروژه تحت لایسنس [GNU General Public License v3.0 (GPL-3.0)](./LICENSE) منتشر شده است.

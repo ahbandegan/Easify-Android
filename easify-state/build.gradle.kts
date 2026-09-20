@@ -33,9 +33,9 @@ android {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            groupId = "ir.amirhesambandegan.easify-android"
+            groupId = "com.github.ahbandegan.Easify-Android"
             artifactId = "easify-state"
-            version = "2.2.0"
+            version = "3.0.0"
 
             afterEvaluate {
                 from(components["release"])

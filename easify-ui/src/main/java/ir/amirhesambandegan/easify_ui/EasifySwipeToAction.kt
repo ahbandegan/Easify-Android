@@ -1,6 +1,5 @@
 package ir.amirhesambandegan.easify_ui
 
-import android.view.HapticFeedbackConstants
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 
 /**
@@ -48,20 +48,20 @@ fun EasifySwipeToAction(
     leftIconColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
     content: @Composable () -> Unit
 ) {
-    val view = LocalView.current
+    val haptic = LocalHapticFeedback.current
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { dismissValue ->
             when (dismissValue) {
                 SwipeToDismissBoxValue.StartToEnd -> {
                     if (onSwipeRight != null) {
-                        view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         onSwipeRight.invoke()
                         true
                     } else false
                 }
                 SwipeToDismissBoxValue.EndToStart -> {
                     if (onSwipeLeft != null) {
-                        view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         onSwipeLeft.invoke()
                         true
                     } else false

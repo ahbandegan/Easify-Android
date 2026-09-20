@@ -46,6 +46,7 @@ dependencies {
     api(project(":easify-validation"))
     api(project(":easify-camera"))
     api(project(":easify-state"))
+    api(project(":easify-auth"))
 }
 
 afterEvaluate {
@@ -53,9 +54,9 @@ afterEvaluate {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "ir.amirhesambandegan.easify-android"
+                groupId = "com.github.ahbandegan.Easify-Android"
                 artifactId = "easify-android"
-                version = "2.2.0"
+                version = "3.0.0"
             }
         }
     }

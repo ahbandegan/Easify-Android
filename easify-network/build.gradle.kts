@@ -34,9 +34,9 @@ afterEvaluate {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "ir.amirhesambandegan.easify-android"
+                groupId = "com.github.ahbandegan.Easify-Android"
                 artifactId = "easify-network"
-                version = "2.2.0"
+                version = "3.0.0"
             }
         }
     }

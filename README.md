@@ -8,7 +8,7 @@
 
 **EasifyAndroid** is a comprehensive, production-ready modular Android library designed to eliminate boilerplate and simplify complex tasks. 
 
-Since version 2.2.0, EasifyAndroid is **100% modular**. You no longer need to import the entire library! You can pick and choose exactly which modules you need in your app.
+Since version 3.0.0, EasifyAndroid is **100% modular**. You no longer need to import the entire library! You can pick and choose exactly which modules you need in your app.
 
 ---
 
@@ -33,7 +33,7 @@ dependencyResolutionManagement {
 If you want access to the entire suite of features, you can import the umbrella module:
 ```kotlin
 dependencies {
-    implementation("com.github.ahbandegan.Easify-Android:easify-android:2.2.0")
+    implementation("com.github.ahbandegan.Easify-Android:easify-android:3.0.0")
 }
 ```
 
@@ -42,7 +42,7 @@ Each module is published independently to keep your app size small. Add only the
 ```kotlin
 dependencies {
     // Replace <module-name> with any of the modules below
-    implementation("com.github.ahbandegan.Easify-Android:<module-name>:2.2.0")
+    implementation("com.github.ahbandegan.Easify-Android:<module-name>:3.0.0")
 }
 ```
 
@@ -52,12 +52,12 @@ dependencies {
 
 ## 📦 Modules Guide
 
-Below is the detailed guide and documentation for all 22 independent modules. Click to expand!
+Below is the detailed guide and documentation for all 23 independent modules. Click to expand!
 
 <details>
 <summary><b>1. 🔐 easify-security (Encryption & Screen Shield)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-security:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-security:3.0.0")`
 
 Provides Hardware-backed AES-GCM encryption and screen protection to prevent screenshots and screen recording.
 
@@ -75,7 +75,7 @@ val decrypted = EasifyCrypto.decrypt(encrypted)
 <details>
 <summary><b>2. 🛡️ easify-permission (Compose Permissions)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-permission:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-permission:3.0.0")`
 
 Automated, lifecycle-aware permission handling for Jetpack Compose without the boilerplate.
 
@@ -95,7 +95,7 @@ Button(onClick = { permissionLauncher.launch() }) {
 <details>
 <summary><b>3. 👆 easify-biometric (Fingerprint/Face ID)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-biometric:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-biometric:3.0.0")`
 
 Plug-and-play biometric authentication launcher.
 
@@ -116,7 +116,7 @@ Button(onClick = { biometric.authenticate() }) {
 <details>
 <summary><b>4. 🌐 easify-network (Ktor Wrapper & File Uploads)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-network:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-network:3.0.0")`
 
 Fail-safe Ktor 3.x wrapper with `EasifyResult`, auto-token injection, and effortless multi-part file uploads.
 
@@ -136,7 +136,7 @@ EasifyNetwork.uploadMultipart(
 <details>
 <summary><b>5. 🇮🇷 easify-persian (Jalali Calendar & Digits)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-persian:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-persian:3.0.0")`
 
 Jalali (Persian) calendar converter, Persian digits, and number-to-text (Currency) conversion.
 
@@ -155,7 +155,7 @@ val words = 1500000L.toPersianWords() // Output: یک میلیون و پانصد
 <details>
 <summary><b>6. 💳 easify-fintech (Iran Banks & Validation)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-fintech:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-fintech:3.0.0")`
 
 Iranian National ID validator, Bank Card identification (BINs), and SHEBA (IBAN) validation.
 
@@ -174,7 +174,7 @@ val isValidSheba = "IR123...".isValidSheba()
 <details>
 <summary><b>7. 📳 easify-sensor (Hardware Sensors)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-sensor:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-sensor:3.0.0")`
 
 Reactive, descriptive access to hardware sensors (Accelerometer, Proximity, etc.) as Compose State.
 
@@ -190,7 +190,7 @@ if (isClose) { Text("Phone is near your ear!") }
 <details>
 <summary><b>8. 🔵 easify-bluetooth (BLE Scanner)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-bluetooth:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-bluetooth:3.0.0")`
 
 Modern BLE scanner and manager that automatically handles Android 12+ permission complexities.
 
@@ -207,7 +207,7 @@ Button(onClick = { btScanner.startScanning() }) {
 <details>
 <summary><b>9. 📍 easify-location (Live GPS)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-location:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-location:3.0.0")`
 
 One-line live location tracking with automatic permission management.
 
@@ -221,20 +221,42 @@ locationState?.let { loc ->
 </details>
 
 <details>
-<summary><b>10. 🎨 easify-ui (Compose Modifiers & Utils)</b></summary>
+<summary><b>10. 🎨 easify-ui (Compose UI, Theme Animations & CMP)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-ui:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-ui:3.0.0")`
 
-iOS-style bounce clicks, shimmer loading effects, and keyboard hiding utilities.
+iOS-style bounce clicks, shimmer loading effects, swipe-to-action gestures, and circular reveal theme transition animations. Compatible with Jetpack Compose & Compose Multiplatform (CMP).
 
 ```kotlin
-// iOS-style bounce click effect
+// 1. Circular reveal theme transition animation
+var isDark by remember { mutableStateOf(false) }
+var clickOffset by remember { mutableStateOf(Offset.Zero) }
+
+EasifyThemeContainer(
+    darkTheme = isDark,
+    animationType = ThemeAnimationType.CIRCULAR_REVEAL,
+    epicenter = clickOffset,
+    lightColorScheme = lightColorScheme(),
+    darkColorScheme = darkColorScheme()
+) {
+    // App content
+}
+
+// 2. Swipe to Action (with pure Compose haptic feedback)
+EasifySwipeToAction(
+    onSwipeRight = { /* archive */ },
+    onSwipeLeft = { /* delete */ }
+) {
+    Text("Swipe me left or right")
+}
+
+// 3. iOS-style bounce click effect
 Card(modifier = Modifier.bounceClick { /* action */ }) { ... }
 
-// Shimmer loading effect
+// 4. Shimmer loading effect
 Box(modifier = Modifier.size(100.dp).shimmer(isLoading = true))
 
-// Hide keyboard on outside tap
+// 5. Hide keyboard on outside tap
 Column(modifier = Modifier.hideKeyboardOnTapOutside()) { ... }
 ```
 </details>
@@ -242,7 +264,7 @@ Column(modifier = Modifier.hideKeyboardOnTapOutside()) { ... }
 <details>
 <summary><b>11. 📝 easify-form (Form State Management)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-form:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-form:3.0.0")`
 
 Reactive form state management with built-in validation support.
 
@@ -263,7 +285,7 @@ Button(onClick = { if(form.validate()) { /* submit */ } }) { Text("Submit") }
 <details>
 <summary><b>12. 📳 easify-haptic (Tactile Feedback)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-haptic:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-haptic:3.0.0")`
 
 Semantic tactile feedback (Success/Error/Click) with a single command.
 
@@ -282,7 +304,7 @@ Button(onClick = {
 <details>
 <summary><b>13. 🔔 easify-notification (Simple Alerts)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-notification:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-notification:3.0.0")`
 
 Simplified Notification Channels and local push alerts.
 
@@ -299,7 +321,7 @@ EasifyNotification.show(
 <details>
 <summary><b>14. 📂 easify-file (Visual Pickers)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-file:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-file:3.0.0")`
 
 Visual media selection for Images, Videos, and Files.
 
@@ -316,7 +338,7 @@ Button(onClick = { filePicker.launch() }) { Text("Pick Image") }
 <details>
 <summary><b>15. 🗄️ easify-storage (Secure DataStore)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-storage:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-storage:3.0.0")`
 
 Combines Preferences DataStore with `easify-security` for a secure storage solution.
 
@@ -334,7 +356,7 @@ val token = storage.getSecure("auth_token")
 <details>
 <summary><b>16. ⚙️ easify-context (Intents & System)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-context:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-context:3.0.0")`
 
 Utilities for Clipboard, Sharing, and System Settings.
 
@@ -348,7 +370,7 @@ context.openAppSettings()
 <details>
 <summary><b>17. 🔄 easify-lifecycle (Compose Lifecycle)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-lifecycle:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-lifecycle:3.0.0")`
 
 Compose-ready lifecycle effect wrappers.
 
@@ -366,7 +388,7 @@ useLifecycleEvent { event ->
 <details>
 <summary><b>18. ✅ easify-validation (Regex Checks)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-validation:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-validation:3.0.0")`
 
 Common Regex patterns and string validation collection.
 
@@ -380,7 +402,7 @@ val passwordStrong = "Aa!123456".isStrongPassword()
 <details>
 <summary><b>19. 🖼️ easify-image (Bitmap Processing)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-image:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-image:3.0.0")`
 
 Resize and compress bitmaps easily before uploading.
 
@@ -395,7 +417,7 @@ val optimizedBitmap = originalBitmap.compress(
 <details>
 <summary><b>20. 🔢 easify-format (String Formatters)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-format:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-format:3.0.0")`
 
 Clean formatters for Numbers and Durations.
 
@@ -408,7 +430,7 @@ val time = 3661000L.formatDuration()   // Output: "01:01:01"
 <details>
 <summary><b>21. 📷 easify-camera (CameraX & QR/Barcode Scanner)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-camera:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-camera:3.0.0")`
 
 Effortless CameraX preview, photo capture, and MLKit Barcode/QR scanning in Compose.
 
@@ -425,7 +447,7 @@ CameraPreview(
 <details>
 <summary><b>22. ⚡ easify-state (Flutter BLoC & Cubit Architecture for Compose)</b></summary>
 
-**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-state:2.2.0")`
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-state:3.0.0")`
 
 Full-featured Flutter BLoC implementation for Android & Jetpack Compose. Includes `Bloc`, `Cubit`, `BlocViewModel`, 4 event concurrency transformers (`sequential`, `restartable`, `droppable`, `concurrent`), and Flutter-like `read` & `watch` context extensions.
 
@@ -460,10 +482,59 @@ fun CounterScreen() {
 ```
 </details>
 
+<details>
+<summary><b>23. 🔑 easify-auth (Google Sign-In, SMS OTP & OAuth 2.0 PKCE)</b></summary>
+
+**Import:** `implementation("com.github.ahbandegan.Easify-Android:easify-auth:3.0.0")`
+
+Modern authentication suite with Google Credential Manager (One-Tap / Auto-select), automated SMS OTP retrieval & SMS User Consent API, and secure OAuth 2.0 / 2.1 authorization with PKCE (RFC 7636) and CSRF protection.
+
+```kotlin
+// 1. Google Sign-In with Credential Manager
+val authClient = rememberEasifyAuth()
+
+Button(onClick = {
+    coroutineScope.launch {
+        when (val result = authClient.signInWithGoogle(serverClientId = "YOUR_CLIENT_ID")) {
+            is AuthResult.Success -> println("Welcome ${result.data.displayName} (${result.data.email})")
+            is AuthResult.Error -> println("Error: ${result.message}")
+            AuthResult.Cancelled -> println("User cancelled")
+        }
+    }
+}) {
+    Text("Sign in with Google")
+}
+
+// 2. Automatic SMS OTP Receiver in Compose
+var otpCode by remember { mutableStateOf("") }
+SmsOtpEffect(senderPhoneNumber = "1000...") { otp ->
+    otpCode = otp // Automatically extracts English and Persian digits
+}
+
+// 3. OAuth 2.0 with PKCE & Direct Token Exchange
+Button(onClick = {
+    coroutineScope.launch {
+        val result = authClient.signInWithOAuthAndExchange(
+            provider = OAuthProvider.GITHUB,
+            clientId = "YOUR_GITHUB_CLIENT_ID",
+            clientSecret = "YOUR_GITHUB_CLIENT_SECRET",
+            redirectUri = "myapp://oauth-callback",
+            scopes = listOf("read:user", "user:email")
+        )
+        if (result is AuthResult.Success) {
+            println("Access Token: ${result.data.accessToken}")
+        }
+    }
+}) {
+    Text("Sign in with GitHub")
+}
+```
+</details>
+
 ---
 
 ## 🤝 Contribution
 Contributions are welcome! If you have ideas for new "Easify" modules, please open an issue or a pull request.
 
 ## ⚖️ License
-MIT License. Free for personal and commercial use.
+Licensed under the [GNU General Public License v3.0 (GPL-3.0)](./LICENSE).

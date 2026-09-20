@@ -52,3 +52,4 @@ include(
 )
 include(":easify-android")
 include(":easify-state")
+include(":easify-auth")

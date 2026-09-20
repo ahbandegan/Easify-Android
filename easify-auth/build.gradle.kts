@@ -5,20 +5,21 @@ plugins {
 }
 
 android {
-    namespace = "ir.amirhesambandegan.easify_persian"
+    namespace = "ir.amirhesambandegan.easify_auth"
     compileSdk = 37
 
     defaultConfig {
         minSdk = 24
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    
+
     publishing {
         singleVariant("release") {
             withSourcesJar()
         }
     }
-    
+
     buildFeatures {
         compose = true
     }
@@ -35,7 +36,7 @@ afterEvaluate {
             create<MavenPublication>("release") {
                 from(components["release"])
                 groupId = "com.github.ahbandegan.Easify-Android"
-                artifactId = "easify-persian"
+                artifactId = "easify-auth"
                 version = "3.0.0"
             }
         }
@@ -50,6 +51,15 @@ dependencies {
     api(libs.androidx.core.ktx)
     api(libs.kotlinx.coroutines.android)
     api(libs.kotlinx.coroutines.core)
+
+    api(libs.androidx.credentials)
+    api(libs.androidx.credentials.play.services.auth)
+    api(libs.googleid)
+    api(libs.androidx.browser)
+    api(libs.play.services.auth.api.phone)
+
+    api(libs.androidx.appcompat)
+    api(libs.material)
+
+    testImplementation(libs.junit)
 }
-
-
