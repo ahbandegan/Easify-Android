@@ -3,38 +3,28 @@ package ir.amirhesambandegan.easify_haptic
 import android.content.Context
 
 /**
- * Tracks the progress of a pull/drag gesture (e.g., Pull to Refresh)
- * and fires haptic feedback at specific thresholds.
- *
- * @property context The context used for dispatching haptic feedback.
+ * Tracks pull/drag gesture progress (`0.0f`..`1.0f`) and dispatches haptic ticks at 20% intervals.
  */
-class PullHapticTracker(private val context: Context) {
-    /**
-     * Internal tracker for the last crossed progress threshold.
-     */
+class PullHapticTracker(context: Context) {
+    private val appContext = context.applicationContext
     private var lastTickThreshold = 0f
 
-    /**
-     * Call this inside a gesture listener. 
-     * @param progress 0.0 to 1.0
-     */
     fun onPullProgress(progress: Float) {
-        if (progress > lastTickThreshold + 0.2f) {
-            context.hapticTick()
+        val clamped = progress.coerceIn(0f, 1f)
+        while (clamped >= lastTickThreshold + 0.2f && lastTickThreshold < 0.8f) {
+            appContext.hapticTick()
             lastTickThreshold += 0.2f
-        } else if (progress < lastTickThreshold - 0.2f) {
-            lastTickThreshold -= 0.2f
         }
-        
-        if (progress >= 1.0f && lastTickThreshold < 1.0f) {
-            context.hapticImpactMedium() // Snap threshold reached
+        while (clamped <= lastTickThreshold - 0.2f && lastTickThreshold > 0f) {
+            lastTickThreshold = (lastTickThreshold - 0.2f).coerceAtLeast(0f)
+        }
+
+        if (clamped >= 1.0f && lastTickThreshold < 1.0f) {
+            appContext.hapticImpactMedium()
             lastTickThreshold = 1.0f
         }
     }
-    
-    /**
-     * Resets the gesture tracking threshold back to zero.
-     */
+
     fun reset() {
         lastTickThreshold = 0f
     }

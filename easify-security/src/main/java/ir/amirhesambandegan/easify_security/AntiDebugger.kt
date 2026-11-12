@@ -1,43 +1,62 @@
 package ir.amirhesambandegan.easify_security
 
 import android.os.Debug
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
 /**
- * A utility object designed to detect and prevent debugging attempts on the application.
+ * Periodically detects attached debuggers and executes the configured response action.
  */
 object AntiDebugger {
 
-    /**
-     * The coroutine job responsible for running the periodic debugger checks.
-     */
+    private val lock = Any()
+    private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    @Volatile
     private var job: Job? = null
 
     /**
-     * Periodically checks if a debugger is attached. If so, immediately kills the app
-     * to prevent reverse engineering and memory dumping.
+     * Starts periodic debugger monitoring on [scope]. Calling again while already active is a no-op.
      *
-     * @param scope The coroutine scope in which the monitoring job will be launched.
-     * Defaults to a scope using [Dispatchers.Default].
+     * @param scope Coroutine scope used for the polling loop.
+     * @param intervalMillis Poll interval in milliseconds. Defaults to `2000L`.
+     * @param onDebuggerDetected Invoked when a debugger is attached; defaults to terminating the process.
      */
-    fun startMonitoring(scope: CoroutineScope = CoroutineScope(Dispatchers.Default)) {
-        if (job?.isActive == true) return
-        
-        job = scope.launch {
-            while (isActive) {
-                if (Debug.isDebuggerConnected() || Debug.waitingForDebugger()) {
-                    android.os.Process.killProcess(android.os.Process.myPid())
-                    System.exit(1)
+    fun startMonitoring(
+        scope: CoroutineScope = defaultScope,
+        intervalMillis: Long = 2_000L,
+        onDebuggerDetected: () -> Unit = {
+            android.os.Process.killProcess(android.os.Process.myPid())
+            exitProcess(1)
+        }
+    ) {
+        synchronized(lock) {
+            if (job?.isActive == true) return
+            job = scope.launch {
+                while (isActive) {
+                    if (Debug.isDebuggerConnected() || Debug.waitingForDebugger()) {
+                        onDebuggerDetected()
+                        break
+                    }
+                    delay(intervalMillis.coerceAtLeast(250L))
                 }
-                delay(2000)
             }
         }
     }
 
     /**
-     * Stops the periodic monitoring for debuggers by canceling the active coroutine job.
+     * Stops periodic debugger monitoring and clears the tracked coroutine handle.
      */
     fun stopMonitoring() {
-        job?.cancel()
+        synchronized(lock) {
+            job?.cancel()
+            job = null
+        }
     }
 }

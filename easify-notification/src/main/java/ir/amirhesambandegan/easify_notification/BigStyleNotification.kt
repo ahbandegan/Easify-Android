@@ -1,9 +1,13 @@
 package ir.amirhesambandegan.easify_notification
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 
 /**
  * Utility object for displaying rich notifications using expandable styles like BigText and BigPicture.
@@ -82,10 +86,17 @@ object BigStyleNotification {
      * @param builder The configured [NotificationCompat.Builder] instance.
      */
     private fun notify(context: Context, id: Int, builder: NotificationCompat.Builder) {
-        try {
-            NotificationManagerCompat.from(context).notify(id, builder.build())
-        } catch (e: SecurityException) {
-            e.printStackTrace()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            try {
+                NotificationManagerCompat.from(context).notify(id, builder.build())
+            } catch (e: SecurityException) {
+                e.printStackTrace()
+            }
         }
     }
 }

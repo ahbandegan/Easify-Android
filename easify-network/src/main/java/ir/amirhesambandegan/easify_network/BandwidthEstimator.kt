@@ -1,79 +1,94 @@
 package ir.amirhesambandegan.easify_network
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
+import android.net.Network
 import android.net.NetworkCapabilities
-import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.LocalContext
-import kotlinx.coroutines.delay
+import androidx.core.content.ContextCompat
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 /**
  * Represents the estimated network bandwidth quality classification.
  */
 enum class NetworkBandwidth {
-    /**
-     * Indicates there is no active internet connection.
-     */
     OFFLINE,
-
-    /**
-     * Poor connection quality (downstream bandwidth < 0.5 Mbps).
-     */
     POOR,
-
-    /**
-     * Moderate connection quality (downstream bandwidth between 0.5 Mbps and 2 Mbps).
-     */
     MODERATE,
-
-    /**
-     * Good connection quality (downstream bandwidth between 2 Mbps and 10 Mbps).
-     */
     GOOD,
-
-    /**
-     * Excellent connection quality (downstream bandwidth >= 10 Mbps).
-     */
     EXCELLENT
 }
 
 /**
- * A Composable function that continuously monitors and estimates the current network bandwidth quality.
- *
- * This function periodically samples the active network's downstream bandwidth using [ConnectivityManager]
- * and provides the estimated [NetworkBandwidth] level as a Compose [State].
- *
- * @return A [State] holding the current estimated [NetworkBandwidth].
+ * Event-driven Composable monitoring downstream bandwidth via [ConnectivityManager] callbacks
+ * without periodic timer polling.
  */
 @Composable
 fun rememberBandwidthState(): State<NetworkBandwidth> {
-    val context = LocalContext.current
-    return produceState(initialValue = NetworkBandwidth.OFFLINE, context) {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        
-        while (true) {
-            val network = cm.activeNetwork
-            val capabilities = cm.getNetworkCapabilities(network)
-            
-            if (capabilities == null || !capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
-                value = NetworkBandwidth.OFFLINE
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    val bandwidthKbps = capabilities.linkDownstreamBandwidthKbps
-                    value = when {
-                        bandwidthKbps < 500 -> NetworkBandwidth.POOR // < 0.5 Mbps
-                        bandwidthKbps < 2000 -> NetworkBandwidth.MODERATE // < 2 Mbps
-                        bandwidthKbps < 10000 -> NetworkBandwidth.GOOD // < 10 Mbps
-                        else -> NetworkBandwidth.EXCELLENT
+    val appContext = LocalContext.current.applicationContext
+    return produceState(initialValue = NetworkBandwidth.OFFLINE, appContext) {
+        val cm = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        fun classify(capabilities: NetworkCapabilities?): NetworkBandwidth {
+            if (capabilities == null ||
+                !capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            ) {
+                return NetworkBandwidth.OFFLINE
+            }
+            val bandwidthKbps = capabilities.linkDownstreamBandwidthKbps
+            return when {
+                bandwidthKbps < 500 -> NetworkBandwidth.POOR
+                bandwidthKbps < 2000 -> NetworkBandwidth.MODERATE
+                bandwidthKbps < 10000 -> NetworkBandwidth.GOOD
+                else -> NetworkBandwidth.EXCELLENT
+            }
+        }
+
+        callbackFlow {
+            fun hasNetworkStatePermission(): Boolean =
+                ContextCompat.checkSelfPermission(
+                    appContext,
+                    Manifest.permission.ACCESS_NETWORK_STATE
+                ) == PackageManager.PERMISSION_GRANTED
+
+            if (!hasNetworkStatePermission()) {
+                trySend(NetworkBandwidth.OFFLINE)
+                awaitClose {}
+                return@callbackFlow
+            }
+
+            val current = cm.activeNetwork?.let { cm.getNetworkCapabilities(it) }
+            trySend(classify(current))
+
+            val callback = object : ConnectivityManager.NetworkCallback() {
+                override fun onCapabilitiesChanged(
+                    network: Network,
+                    networkCapabilities: NetworkCapabilities
+                ) {
+                    trySend(classify(networkCapabilities))
+                }
+
+                override fun onLost(network: Network) {
+                    if (!hasNetworkStatePermission()) {
+                        trySend(NetworkBandwidth.OFFLINE)
+                        return
                     }
-                } else {
-                    value = NetworkBandwidth.GOOD // Fallback
+                    val active = cm.activeNetwork?.let { cm.getNetworkCapabilities(it) }
+                    trySend(classify(active))
                 }
             }
-            delay(2000)
+
+            cm.registerDefaultNetworkCallback(callback)
+            awaitClose { runCatching { cm.unregisterNetworkCallback(callback) } }
         }
+            .distinctUntilChanged()
+            .collect { value = it }
     }
 }

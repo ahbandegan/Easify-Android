@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     `maven-publish`
+}
+
 android {
     namespace = "ir.amirhesambandegan.easify_android"
     compileSdk = 37
@@ -11,11 +13,14 @@ android {
     defaultConfig {
         minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 
     publishing {
         singleVariant("release") {
             withSourcesJar()
-    
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -23,18 +28,27 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+}
 
 afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "ir.amirhesambandegan"
+                groupId = "com.github.ahbandegan.Easify-Android"
                 artifactId = "easify-android"
-                version = "3.0.0"
+                version = libs.versions.easify.get()
+            }
+        }
+    }
+}
 
 dependencies {
     api(libs.kotlinx.coroutines.android)
@@ -65,4 +79,4 @@ dependencies {
     implementation(libs.androidx.compose.ui.test.manifest)
     implementation(libs.androidx.compose.ui.test.junit4)
     testImplementation(libs.junit)
-
+}

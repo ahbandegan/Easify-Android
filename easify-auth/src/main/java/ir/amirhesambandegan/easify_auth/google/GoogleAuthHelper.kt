@@ -16,19 +16,12 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import ir.amirhesambandegan.easify_auth.model.AuthResult
 import ir.amirhesambandegan.easify_auth.model.AuthUser
+import kotlinx.coroutines.CancellationException
 
 internal class GoogleAuthHelper(private val context: Context) {
 
     private val credentialManager = CredentialManager.create(context)
 
-    /**
-     * Signs in with Google using Android's Credential Manager.
-     *
-     * @param serverClientId The Web Client ID configured in Google Cloud Console / Firebase.
-     * @param filterByAuthorizedAccounts If true, only shows accounts that have previously signed in to this app.
-     * @param autoSelectEnabled If true, automatically signs in without prompt if only one account exists.
-     * @param nonce Optional nonce to prevent replay attacks.
-     */
     suspend fun signIn(
         serverClientId: String,
         filterByAuthorizedAccounts: Boolean = false,
@@ -67,6 +60,8 @@ internal class GoogleAuthHelper(private val context: Context) {
                 }
                 else -> AuthResult.Error(IllegalStateException("Unsupported credential type: ${credential.type}"))
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (_: GetCredentialCancellationException) {
             AuthResult.Cancelled
         } catch (e: GetCredentialException) {
@@ -76,13 +71,12 @@ internal class GoogleAuthHelper(private val context: Context) {
         }
     }
 
-    /**
-     * Clears the user's credential state from Credential Manager (Sign-Out).
-     */
     suspend fun signOut(): AuthResult<Unit> {
         return try {
             credentialManager.clearCredentialState(ClearCredentialStateRequest())
             AuthResult.Success(Unit)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: ClearCredentialException) {
             AuthResult.Error(e)
         } catch (e: Exception) {
@@ -90,14 +84,13 @@ internal class GoogleAuthHelper(private val context: Context) {
         }
     }
 
-    /**
-     * Saves a username and password into Google Password Manager via Credential Manager.
-     */
     suspend fun savePassword(username: String, password: String): AuthResult<Unit> {
         return try {
             val request = CreatePasswordRequest(id = username, password = password)
             credentialManager.createCredential(context = context, request = request)
             AuthResult.Success(Unit)
+        } catch (e: CancellationException) {
+            throw e
         } catch (_: CreateCredentialCancellationException) {
             AuthResult.Cancelled
         } catch (e: CreateCredentialException) {
@@ -107,9 +100,6 @@ internal class GoogleAuthHelper(private val context: Context) {
         }
     }
 
-    /**
-     * Retrieves saved username/password credentials from Credential Manager.
-     */
     suspend fun getSavedPassword(): AuthResult<Pair<String, String>> {
         val request = GetCredentialRequest.Builder()
             .addCredentialOption(GetPasswordOption())
@@ -118,11 +108,11 @@ internal class GoogleAuthHelper(private val context: Context) {
         return try {
             val result = credentialManager.getCredential(context = context, request = request)
             when (val credential = result.credential) {
-                is PasswordCredential -> {
-                    AuthResult.Success(Pair(credential.id, credential.password))
-                }
+                is PasswordCredential -> AuthResult.Success(Pair(credential.id, credential.password))
                 else -> AuthResult.Error(IllegalStateException("Unsupported credential type: ${credential.type}"))
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (_: GetCredentialCancellationException) {
             AuthResult.Cancelled
         } catch (e: GetCredentialException) {

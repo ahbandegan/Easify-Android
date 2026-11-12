@@ -1,10 +1,13 @@
 package ir.amirhesambandegan.easify_security
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.provider.Settings
+import androidx.core.content.ContextCompat
 import java.io.File
 
 /**
@@ -55,8 +58,16 @@ object EasifySecurityUtils {
      * @return `true` if an active VPN transport is detected, `false` otherwise.
      */
     fun isVpnActive(context: Context): Boolean {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_NETWORK_STATE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return false
+        }
         val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+                ?: return false
         val activeNetwork = connectivityManager.activeNetwork ?: return false
         val caps = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
         return caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN)

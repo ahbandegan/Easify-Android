@@ -2,59 +2,64 @@ package ir.amirhesambandegan.easify_permission
 
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import java.util.Collections
+import java.util.IdentityHashMap
 
-/**
- * Represents the granular status of an Android runtime permission.
- */
 enum class PermissionStatus {
-    /** The permission has been granted by the user. */
     GRANTED,
-    
-    /** The permission was denied and the app should present an educational rationale to explain why the permission is needed. */
     DENIED_SHOULD_SHOW_RATIONALE,
-    
-    /** The permission was permanently denied ("Don't ask again" selected) or has not been requested yet. */
     PERMANENTLY_DENIED
 }
 
-/**
- * Holds the state of a single permission request in Jetpack Compose.
- *
- * @property permission The permission identifier string being requested (e.g. `Manifest.permission.CAMERA`).
- * @property status The current [PermissionStatus] representing granted, rationale needed, or permanently denied.
- * @property launchPermissionRequest Callback to trigger the permission request dialog.
- */
 class PermissionState(
     val permission: String,
     val status: PermissionStatus,
     val launchPermissionRequest: () -> Unit
 )
 
-/**
- * Remembers and observes the permission state for a single runtime permission in Jetpack Compose.
- *
- * @param permission The runtime permission string to observe and request.
- * @return A [PermissionState] instance containing the current status and a launch function.
- */
 @Composable
 fun rememberPermissionState(permission: String): PermissionState {
     val context = LocalContext.current
-    val activity = context as? Activity
-    
-    var status by remember { mutableStateOf(getPermissionStatus(context, activity, permission)) }
-    
+    val activity = remember(context) { context.findHostActivity() }
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    var status by remember(permission, context) {
+        mutableStateOf(getPermissionStatus(context, activity, permission))
+    }
+
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { _ ->
         status = getPermissionStatus(context, activity, permission)
     }
-    
-    return remember(status) {
+
+    DisposableEffect(lifecycleOwner, permission, context) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                status = getPermissionStatus(context, activity, permission)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    return remember(permission, status, launcher) {
         PermissionState(
             permission = permission,
             status = status,
@@ -63,27 +68,27 @@ fun rememberPermissionState(permission: String): PermissionState {
     }
 }
 
-/**
- * Determines the current [PermissionStatus] of a given permission.
- *
- * @param context The [Context] to check if permission is granted.
- * @param activity The optional host [Activity] to check whether rationale should be displayed.
- * @param permission The permission identifier to check.
- * @return The evaluated [PermissionStatus].
- */
+private fun Context.findHostActivity(): Activity? {
+    var current: Context? = this
+    val visited = Collections.newSetFromMap(IdentityHashMap<Context, Boolean>())
+    while (current is ContextWrapper && visited.add(current)) {
+        if (current is Activity) return current
+        current = current.baseContext
+    }
+    return null
+}
+
 private fun getPermissionStatus(context: Context, activity: Activity?, permission: String): PermissionStatus {
     val isGranted = ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
     if (isGranted) return PermissionStatus.GRANTED
-    
+
     val shouldShowRationale = activity?.let {
         ActivityCompat.shouldShowRequestPermissionRationale(it, permission)
     } ?: false
-    
+
     return if (shouldShowRationale) {
         PermissionStatus.DENIED_SHOULD_SHOW_RATIONALE
     } else {
-        // Technically, this could also be the first time asking, but in practice 
-        // it serves as the blocked state if already asked.
-        PermissionStatus.PERMANENTLY_DENIED 
+        PermissionStatus.PERMANENTLY_DENIED
     }
 }

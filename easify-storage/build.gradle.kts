@@ -11,7 +11,7 @@ android {
         minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    
+
     publishing {
         singleVariant("release") {
             withSourcesJar()
@@ -31,7 +31,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.ahbandegan.Easify-Android"
                 artifactId = "easify-storage"
-                version = "3.0.0"
+                version = libs.versions.easify.get()
             }
         }
     }
@@ -44,10 +44,8 @@ dependencies {
 
     api(project(":easify-security"))
     api(libs.datastore.preferences)
-    
+
     api(libs.androidx.room.runtime)
     api(libs.androidx.room.ktx)
     api(libs.gson)
 }
-
-

@@ -1,57 +1,71 @@
+@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+
 plugins {
-    alias(libs.plugins.android.library)
-    id("maven-publish")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.kmp.library)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.kotlin.compose)
+    id("maven-publish")
 }
 
-android {
-    namespace = "ir.amirhesambandegan.easify_form"
-    compileSdk = 37
+group = "com.github.ahbandegan.Easify-Android"
+version = libs.versions.easify.get()
 
-    defaultConfig {
+kotlin {
+    jvmToolchain(17)
+    withSourcesJar(publish = true)
+
+    jvm()
+
+    android {
+        namespace = "ir.amirhesambandegan.easify_form"
+        compileSdk = 37
         minSdk = 24
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-    
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-        }
+        withHostTest {}
     }
 
-    buildFeatures {
-        compose = true
-    }
+    iosArm64()
+    iosSimulatorArm64()
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("release") {
-                from(components["release"])
-                groupId = "com.github.ahbandegan.Easify-Android"
-                artifactId = "easify-form"
-                version = "3.0.0"
+    js {
+        browser {
+            testTask {
+                enabled = false
             }
         }
     }
+    wasmJs {
+        browser {
+            testTask {
+                enabled = false
+            }
+        }
+    }
+
+    sourceSets {
+        commonMain.dependencies {
+            api(project(":easify-form-core"))
+            api(libs.kotlinx.coroutines.core)
+            api(libs.compose.runtime)
+            api(libs.compose.foundation)
+            api(libs.compose.ui)
+            implementation(libs.kotlinx.serialization.json)
+        }
+        androidMain.dependencies {
+            api(libs.androidx.core.ktx)
+            api(libs.kotlinx.coroutines.android)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+        }
+    }
 }
 
-dependencies {
-    api(libs.androidx.core.ktx)
-    api(libs.kotlinx.coroutines.android)
-    api(libs.kotlinx.coroutines.core)
-
-    api(platform(libs.androidx.compose.bom))
-    api(libs.androidx.compose.ui)
-    api(libs.androidx.compose.ui.graphics)
-    api(libs.androidx.compose.material3)
-    api(libs.androidx.compose.activity)
+// Library modules don't declare a browser executable binary; commonTest runs on JVM/Android/Native.
+tasks.matching {
+    it.name == "checkComposeUiTestConfigurationForJs" ||
+        it.name == "checkComposeUiTestConfigurationForWasmJs"
+}.configureEach {
+    enabled = false
 }
-
-

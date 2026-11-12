@@ -1,5 +1,6 @@
 package ir.amirhesambandegan.easify_network
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -9,30 +10,25 @@ import java.net.InetSocketAddress
 import java.net.Socket
 
 /**
- * Periodically measures real network latency (round-trip time in milliseconds) by opening a socket connection to a host.
- *
- * Emits the measured latency in milliseconds on [Dispatchers.IO]. If the connection fails or times out (2000ms),
- * it emits `-1` indicating an offline or unreachable host.
- *
- * @param host The remote host or IP address to connect to. Defaults to Google DNS (`"8.8.8.8"`).
- * @param port The port number on the remote host. Defaults to `53` (DNS port).
- * @param intervalMs The delay interval between subsequent ping attempts in milliseconds. Defaults to `3000L` (3 seconds).
- * @return A cold [Flow] emitting the round-trip latency in milliseconds, or `-1` on failure.
+ * Periodically measures network TCP RTT latency to [host]:[port] on [Dispatchers.IO].
+ * Emits `-1` when unreachable or timed out, while properly propagating coroutine cancellation.
  */
 fun observePing(host: String = "8.8.8.8", port: Int = 53, intervalMs: Long = 3000): Flow<Int> = flow {
+    val safeInterval = intervalMs.coerceAtLeast(100L)
     while (true) {
         val start = System.currentTimeMillis()
-        var ping = -1
-        try {
+        val ping = try {
             Socket().use { socket ->
                 socket.connect(InetSocketAddress(host, port), 2000)
-                ping = (System.currentTimeMillis() - start).toInt()
+                (System.currentTimeMillis() - start).toInt()
             }
-        } catch (e: Exception) {
-            ping = -1 // Error / Offline
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: Exception) {
+            -1
         }
-        
+
         emit(ping)
-        delay(intervalMs)
+        delay(safeInterval)
     }
 }.flowOn(Dispatchers.IO)

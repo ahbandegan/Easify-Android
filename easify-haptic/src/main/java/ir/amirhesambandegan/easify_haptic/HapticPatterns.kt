@@ -1,8 +1,11 @@
 package ir.amirhesambandegan.easify_haptic
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.VibrationEffect
+import androidx.core.content.ContextCompat
 
 /**
  * Triggers a heartbeat-like haptic feedback pattern.
@@ -60,6 +63,13 @@ fun Context.hapticMachineGun() {
  * @param amplitudes An array of amplitudes corresponding to the timings, or null to use default amplitude.
  */
 private fun Context.performPattern(pattern: LongArray, amplitudes: IntArray?) {
+    if (ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.VIBRATE
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+        return
+    }
     val vibrator = EasifyHapticManager.getVibrator(this) ?: return
     
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && amplitudes != null && vibrator.hasAmplitudeControl()) {

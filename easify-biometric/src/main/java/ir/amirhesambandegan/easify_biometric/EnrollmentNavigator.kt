@@ -1,33 +1,51 @@
 package ir.amirhesambandegan.easify_biometric
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
+import androidx.biometric.BiometricManager
 
 /**
- * Utility object for navigating the user to the device's biometric enrollment settings.
+ * Navigates safely to device biometric enrollment settings with automatic fallbacks for OEMs
+ * that omit the dedicated biometric enrollment action.
  */
 object EnrollmentNavigator {
-    
+
     /**
-     * Opens the device settings screen where the user can enroll biometric data.
-     * For devices running Android 11 (API 30) or higher, it opens the specific biometric enroll intent.
-     * For older devices, it opens the general security settings.
-     * 
-     * @param context The context used to start the settings activity.
+     * Opens device biometric enrollment settings (Android 11+), falling back cleanly to security
+     * or general system settings if an OEM omits the activity handler.
      */
     fun openBiometricEnrollmentSettings(context: Context) {
-        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val primaryIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-                putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED, 
-                    androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG or 
-                    androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+                putExtra(
+                    Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                    BiometricManager.Authenticators.BIOMETRIC_STRONG or
+                        BiometricManager.Authenticators.DEVICE_CREDENTIAL
+                )
             }
         } else {
             Intent(Settings.ACTION_SECURITY_SETTINGS)
         }
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        context.startActivity(intent)
+        primaryIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        try {
+            context.startActivity(primaryIntent)
+        } catch (_: ActivityNotFoundException) {
+            val securityIntent = Intent(Settings.ACTION_SECURITY_SETTINGS).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            try {
+                context.startActivity(securityIntent)
+            } catch (_: ActivityNotFoundException) {
+                runCatching {
+                    context.startActivity(
+                        Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    )
+                }
+            }
+        }
     }
 }

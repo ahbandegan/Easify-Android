@@ -10,28 +10,32 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 /**
- * A utility class that observes a specific hardware sensor and provides a reactive asynchronous [Flow] of its events.
- * This class abstracts away the traditional [SensorEventListener] implementation, making it easier to integrate sensor data into coroutine-based architectures.
- *
- * @property context The application context used to access the [SensorManager].
- * @property sensorType The integer type of the sensor to observe (e.g., [Sensor.TYPE_ACCELEROMETER]).
- * @property samplingPeriod The requested sampling rate for sensor events (e.g., [SensorManager.SENSOR_DELAY_UI]).
+ * Observes a hardware sensor and emits readings as a cold asynchronous [Flow] of [EasifySensorEvent].
+ * Stores only `applicationContext` to prevent Activity context leaks.
  */
 class SensorObserver(
-    private val context: Context,
+    context: Context,
     private val sensorType: Int,
     private val samplingPeriod: Int = SensorManager.SENSOR_DELAY_UI
 ) {
-    private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    private val sensor = sensorManager.getDefaultSensor(sensorType)
+    private val appContext = context.applicationContext
+    private val sensorManager = appContext.getSystemService(Context.SENSOR_SERVICE) as? SensorManager
+    private val sensor = sensorManager?.getDefaultSensor(sensorType)
 
     /**
-     * A cold [Flow] that emits [EasifySensorEvent]s as they are received from the hardware sensor.
-     * The underlying sensor listener is automatically registered when the flow is collected and unregistered when the collection is cancelled or closed.
-     * If the requested sensor is not available on the device, the flow completes immediately without emitting any values.
+     * Returns `true` when the requested hardware sensor exists on this device.
+     */
+    val isAvailable: Boolean
+        get() = sensor != null
+
+    /**
+     * Cold [Flow] emitting [EasifySensorEvent] snapshots whenever sensor values update.
+     * Completes immediately when [SensorManager] or the requested sensor is unavailable.
      */
     val sensorData: Flow<EasifySensorEvent> = callbackFlow {
-        if (sensor == null) {
+        val manager = sensorManager
+        val targetSensor = sensor
+        if (manager == null || targetSensor == null) {
             close()
             return@callbackFlow
         }
@@ -49,13 +53,13 @@ class SensorObserver(
                 }
             }
 
-            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) = Unit
         }
 
-        sensorManager.registerListener(listener, sensor, samplingPeriod)
+        manager.registerListener(listener, targetSensor, samplingPeriod)
 
         awaitClose {
-            sensorManager.unregisterListener(listener)
+            manager.unregisterListener(listener)
         }
     }
 }

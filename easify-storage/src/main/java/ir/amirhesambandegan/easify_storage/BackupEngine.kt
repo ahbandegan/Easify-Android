@@ -8,45 +8,55 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
 /**
- * A utility object that handles the backup and export of the application's local data.
+ * Handles creating ZIP backups of application databases, DataStore, and shared preferences.
  */
 object BackupEngine {
 
     /**
-     * Creates a standard backup zip archive containing the application's
-     * databases, DataStore, and shared preferences.
+     * Creates a backup ZIP archive containing the app's `databases`, `datastore`, and `shared_prefs`
+     * directories at [outputFile].
      *
-     * @param context The application context used to locate internal data directories.
-     * @param outputFile The destination file where the backup zip will be saved.
-     * @return True if the backup was created successfully, false if an error occurred.
+     * Safely skips [outputFile] itself if located inside app data directories, normalizes ZIP paths
+     * across platforms, and writes via a temporary file to prevent partial/corrupted archives.
      */
     fun exportAppBackup(context: Context, outputFile: File): Boolean {
+        outputFile.parentFile?.mkdirs()
+        val tempFile = File(outputFile.parentFile, ".${outputFile.name}.tmp")
+        val targetCanonical = outputFile.canonicalFile
+        val tempCanonical = tempFile.canonicalFile
+
         return try {
-            FileOutputStream(outputFile).use { fos ->
+            val dataDir = File(context.applicationContext.applicationInfo.dataDir).canonicalFile
+            val dirsToBackup = listOf(
+                File(dataDir, "databases"),
+                File(dataDir, "datastore"),
+                File(dataDir, "shared_prefs")
+            )
+
+            FileOutputStream(tempFile).use { fos ->
                 ZipOutputStream(fos).use { zos ->
-                    val dataDir = File(context.applicationInfo.dataDir)
-                    
-                    val dirsToBackup = listOf(
-                        File(dataDir, "databases"),
-                        File(dataDir, "datastore"),
-                        File(dataDir, "shared_prefs")
-                    )
-                    
-                    dirsToBackup.filter { it.exists() }.forEach { dir ->
+                    dirsToBackup.filter { it.exists() && it.isDirectory }.forEach { dir ->
                         dir.walkTopDown().forEach { file ->
-                            if (file.isFile) {
-                                val entryName = file.absolutePath.substringAfter(dataDir.absolutePath + "/")
+                            val canonical = file.canonicalFile
+                            if (file.isFile && canonical != targetCanonical && canonical != tempCanonical) {
+                                val entryName = canonical.toRelativeString(dataDir).replace('\\', '/')
                                 zos.putNextEntry(ZipEntry(entryName))
-                                FileInputStream(file).use { fis -> fis.copyTo(zos) }
+                                FileInputStream(canonical).use { fis -> fis.copyTo(zos) }
                                 zos.closeEntry()
                             }
                         }
                     }
                 }
             }
+
+            if (outputFile.exists()) outputFile.delete()
+            if (!tempFile.renameTo(outputFile)) {
+                tempFile.copyTo(outputFile, overwrite = true)
+                tempFile.delete()
+            }
             true
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: Exception) {
+            tempFile.delete()
             false
         }
     }

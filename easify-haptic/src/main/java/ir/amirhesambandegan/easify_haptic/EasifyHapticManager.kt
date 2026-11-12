@@ -8,49 +8,41 @@ import android.os.VibratorManager
 import androidx.annotation.FloatRange
 
 /**
- * A singleton object that manages the configuration and state of the haptic feedback system.
+ * Global configuration and hardware access manager for Easify haptic feedback.
  */
 object EasifyHapticManager {
     /**
-     * A global multiplier for the haptic intensity.
-     * Ranges from 0.0 (no vibration) to 1.0 (full intensity).
+     * Global multiplier for haptic amplitude (`0.0f` muted .. `1.0f` full intensity).
      */
+    @Volatile
     var globalIntensity: Float = 1.0f
         set(@FloatRange(from = 0.0, to = 1.0) value) {
             field = value.coerceIn(0f, 1f)
         }
-    
-    /**
-     * Indicates whether haptic feedback is globally enabled or disabled.
-     */
-    var isHapticEnabled: Boolean = true
 
     /**
-     * Retrieves the system [Vibrator] service from the given [context].
-     * Returns null if haptics are disabled globally.
-     *
-     * @param context The context used to access the vibrator service.
-     * @return The [Vibrator] instance, or null if disabled.
+     * Global kill switch for all Easify haptic feedback helpers.
      */
+    @Volatile
+    var isHapticEnabled: Boolean = true
+
     internal fun getVibrator(context: Context): Vibrator? {
-        if (!isHapticEnabled) return null
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-            vibratorManager.defaultVibrator
+        if (!isHapticEnabled || globalIntensity <= 0f) return null
+        val appContext = context.applicationContext
+        val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            (appContext.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager)?.defaultVibrator
         } else {
             @Suppress("DEPRECATION")
-            context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            appContext.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
         }
+        return vibrator?.takeIf { it.hasVibrator() }
     }
 
     /**
-     * Applies the [globalIntensity] multiplier to the given [amplitude].
-     * Ensures the returned amplitude is within the valid range of 1 to 255.
-     * 
-     * @param amplitude The original amplitude value.
-     * @return The scaled amplitude value based on the global intensity.
+     * Scales [amplitude] by [globalIntensity] while preserving zero (`0`) silent slots in waveforms.
      */
     internal fun applyIntensity(amplitude: Int): Int {
+        if (amplitude <= 0 || !isHapticEnabled || globalIntensity <= 0f) return 0
         if (amplitude == VibrationEffect.DEFAULT_AMPLITUDE) return amplitude
         return (amplitude * globalIntensity).toInt().coerceIn(1, 255)
     }

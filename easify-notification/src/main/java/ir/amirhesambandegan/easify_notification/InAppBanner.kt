@@ -1,13 +1,25 @@
 package ir.amirhesambandegan.easify_notification
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,20 +28,25 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
 /**
- * A Jetpack Compose in-app banner component that slides in from the top and automatically dismisses after a delay.
- *
- * @param isVisible Controls whether the banner is visible or hidden.
- * @param title The title text to display on the banner.
- * @param message The description or message text to display on the banner.
- * @param onDismiss Callback invoked when the banner duration elapses and it needs to be dismissed.
+ * Slides in an in-app notification banner from the top and auto-dismisses after [durationMillis].
  */
 @Composable
 fun InAppBanner(
     isVisible: Boolean,
     title: String,
     message: String,
+    durationMillis: Long = 3_000L,
     onDismiss: () -> Unit
 ) {
+    val latestOnDismiss by rememberUpdatedState(onDismiss)
+
+    LaunchedEffect(isVisible, durationMillis) {
+        if (isVisible && durationMillis > 0L) {
+            delay(durationMillis)
+            latestOnDismiss()
+        }
+    }
+
     AnimatedVisibility(
         visible = isVisible,
         enter = slideInVertically(
@@ -67,13 +84,6 @@ fun InAppBanner(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-            }
-        }
-
-        LaunchedEffect(isVisible) {
-            if (isVisible) {
-                delay(3000)
-                onDismiss()
             }
         }
     }

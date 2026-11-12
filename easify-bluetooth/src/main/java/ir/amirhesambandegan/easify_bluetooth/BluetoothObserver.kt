@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import androidx.core.content.ContextCompat
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -13,24 +14,16 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onStart
 
 /**
- * Monitors the Bluetooth adapter state (Enabled/Disabled).
- * 
- * @property context The application or activity context used to register broadcast receivers.
+ * Monitors Bluetooth adapter enabled/disabled state as a cold [Flow] using [ContextCompat.registerReceiver].
  */
-class BluetoothObserver(private val context: Context) {
+class BluetoothObserver(context: Context) {
 
-    /**
-     * The system [BluetoothManager] retrieved from the context.
-     */
-    private val bluetoothManager = context.getSystemService(BluetoothManager::class.java)
-    
-    /**
-     * The default [BluetoothAdapter] used to check the initial state.
-     */
+    private val appContext = context.applicationContext
+    private val bluetoothManager = appContext.getSystemService(BluetoothManager::class.java)
     private val adapter = bluetoothManager?.adapter
 
     /**
-     * A [Flow] that emits true if Bluetooth is enabled, false otherwise.
+     * Cold [Flow] emitting `true` when the device Bluetooth adapter is enabled, `false` otherwise.
      */
     val isBluetoothEnabled: Flow<Boolean> = callbackFlow {
         val receiver = object : BroadcastReceiver() {
@@ -42,10 +35,15 @@ class BluetoothObserver(private val context: Context) {
             }
         }
 
-        context.registerReceiver(receiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
-        
+        ContextCompat.registerReceiver(
+            appContext,
+            receiver,
+            IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED),
+            ContextCompat.RECEIVER_EXPORTED
+        )
+
         awaitClose {
-            context.unregisterReceiver(receiver)
+            runCatching { appContext.unregisterReceiver(receiver) }
         }
     }
         .onStart { emit(adapter?.isEnabled == true) }

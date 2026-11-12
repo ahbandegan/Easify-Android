@@ -12,13 +12,13 @@ android {
         minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    
+
     publishing {
         singleVariant("release") {
             withSourcesJar()
         }
     }
-    
+
     buildFeatures {
         compose = true
     }
@@ -36,7 +36,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.ahbandegan.Easify-Android"
                 artifactId = "easify-notification"
-                version = "3.0.0"
+                version = libs.versions.easify.get()
             }
         }
     }
@@ -47,10 +47,9 @@ dependencies {
     api(libs.androidx.compose.ui)
     api(libs.androidx.compose.material3)
     api(libs.androidx.compose.activity)
+    api(libs.androidx.lifecycle.runtime.compose)
     api(libs.androidx.core.ktx)
     api(libs.kotlinx.coroutines.android)
     api(libs.kotlinx.coroutines.core)
     api(libs.androidx.work.runtime.ktx)
 }
-
-

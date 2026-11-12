@@ -9,6 +9,7 @@ import ir.amirhesambandegan.easify_auth.model.AuthResult
 import ir.amirhesambandegan.easify_auth.model.OAuthConfig
 import ir.amirhesambandegan.easify_auth.model.OAuthProvider
 import ir.amirhesambandegan.easify_auth.model.OAuthTokenResponse
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -16,6 +17,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
+import java.net.URI
 import java.net.URL
 import java.net.URLEncoder
 
@@ -29,6 +31,16 @@ internal class OAuthHelper(private val context: Context) {
     var lastState: String? = null
         private set
 
+    private fun validateEndpointScheme(endpoint: String) {
+        val parsed = URI(endpoint)
+        val scheme = parsed.scheme?.lowercase()
+        val host = parsed.host?.lowercase()
+        val isLocal = host == "localhost" || host == "127.0.0.1"
+        require(scheme == "https" || (scheme == "http" && isLocal)) {
+            "OAuth endpoint must use HTTPS (except localhost/127.0.0.1): $endpoint"
+        }
+    }
+
     fun launchOAuth(
         provider: OAuthProvider,
         config: OAuthConfig
@@ -39,6 +51,7 @@ internal class OAuthHelper(private val context: Context) {
         } else {
             provider.authEndpoint
         }
+        validateEndpointScheme(endpoint)
 
         val state = config.state ?: PkceHelper.generateState()
         lastState = state
@@ -94,14 +107,20 @@ internal class OAuthHelper(private val context: Context) {
             provider.tokenEndpoint
         }
 
+        var connection: HttpURLConnection? = null
         try {
+            validateEndpointScheme(tokenEndpoint)
+
             val url = URL(tokenEndpoint)
-            val connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "POST"
-            connection.doOutput = true
-            connection.doInput = true
-            connection.setRequestProperty("Accept", "application/json")
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+            connection = (url.openConnection() as HttpURLConnection).apply {
+                requestMethod = "POST"
+                doOutput = true
+                doInput = true
+                connectTimeout = 15_000
+                readTimeout = 15_000
+                setRequestProperty("Accept", "application/json")
+                setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+            }
 
             val params = mutableMapOf(
                 "grant_type" to "authorization_code",
@@ -110,19 +129,14 @@ internal class OAuthHelper(private val context: Context) {
                 "client_id" to config.clientId
             )
 
-            config.clientSecret?.let {
-                params["client_secret"] = it
-            }
-
-            if (codeVerifier != null) {
-                params["code_verifier"] = codeVerifier
-            }
+            config.clientSecret?.let { params["client_secret"] = it }
+            if (codeVerifier != null) params["code_verifier"] = codeVerifier
 
             val postData = params.entries.joinToString("&") { (key, value) ->
                 "${URLEncoder.encode(key, "UTF-8")}=${URLEncoder.encode(value, "UTF-8")}"
             }
 
-            OutputStreamWriter(connection.outputStream).use { writer ->
+            OutputStreamWriter(connection.outputStream, Charsets.UTF_8).use { writer ->
                 writer.write(postData)
                 writer.flush()
             }
@@ -134,7 +148,9 @@ internal class OAuthHelper(private val context: Context) {
                 connection.errorStream ?: connection.inputStream
             }
 
-            val rawResponse = BufferedReader(InputStreamReader(inputStream)).use { it.readText() }
+            val rawResponse = BufferedReader(InputStreamReader(inputStream, Charsets.UTF_8)).use {
+                it.readText()
+            }
 
             if (responseCode !in 200..299) {
                 return@withContext AuthResult.Error(
@@ -151,19 +167,23 @@ internal class OAuthHelper(private val context: Context) {
                 )
             }
 
-            val tokenResponse = OAuthTokenResponse(
-                accessToken = json.getString("access_token"),
-                tokenType = if (json.has("token_type")) json.getString("token_type") else null,
-                expiresIn = if (json.has("expires_in")) json.getLong("expires_in") else null,
-                refreshToken = if (json.has("refresh_token")) json.getString("refresh_token") else null,
-                scope = if (json.has("scope")) json.getString("scope") else null,
-                idToken = if (json.has("id_token")) json.getString("id_token") else null,
-                rawResponse = rawResponse
+            AuthResult.Success(
+                OAuthTokenResponse(
+                    accessToken = json.getString("access_token"),
+                    tokenType = if (json.has("token_type")) json.getString("token_type") else null,
+                    expiresIn = if (json.has("expires_in")) json.getLong("expires_in") else null,
+                    refreshToken = if (json.has("refresh_token")) json.getString("refresh_token") else null,
+                    scope = if (json.has("scope")) json.getString("scope") else null,
+                    idToken = if (json.has("id_token")) json.getString("id_token") else null,
+                    rawResponse = rawResponse
+                )
             )
-
-            AuthResult.Success(tokenResponse)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             AuthResult.Error(e)
+        } finally {
+            connection?.disconnect()
         }
     }
 }

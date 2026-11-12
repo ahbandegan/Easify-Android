@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import ir.amirhesambandegan.easify_security.EncryptionManager
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -12,51 +13,39 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 
 /**
- * A reactive and secure controller for Jetpack Preferences DataStore.
- * Provides easy-to-use suspended functions and flows to read, write, and observe
- * preferences securely.
- *
- * @param context The application context used to instantiate the DataStore.
+ * Reactive and AES-256-GCM encrypted controller for Jetpack Preferences DataStore.
  */
 class DataStoreController(context: Context) {
-    private val dataStore = context.dataStore
+    private val dataStore = context.applicationContext.dataStore
     private val securityAlias = "easify_storage_key"
 
     /**
-     * Updates the value associated with the given [key].
-     * 
-     * @param key The DataStore preference key.
-     * @param value The value to store.
-     * @return True if successful, false otherwise.
+     * Updates the value associated with [key].
      */
     suspend fun <T> update(key: Preferences.Key<T>, value: T): Boolean = try {
         dataStore.edit { preferences ->
             preferences[key] = value
         }
         true
-    } catch (e: Exception) {
-        e.printStackTrace()
+    } catch (e: CancellationException) {
+        throw e
+    } catch (_: Exception) {
         false
     }
 
     /**
-     * Retrieves the current value for the [key] once.
-     * 
-     * @param key The DataStore preference key to retrieve.
-     * @return The stored value of type [T], or null if the key doesn't exist or an error occurs.
+     * Retrieves the current value for [key] once, or `null` if absent or on error.
      */
     suspend fun <T> get(key: Preferences.Key<T>): T? = try {
         dataStore.data.first()[key]
-    } catch (e: Exception) {
+    } catch (e: CancellationException) {
+        throw e
+    } catch (_: Exception) {
         null
     }
 
     /**
-     * Returns a [Flow] that emits the value of the [key] whenever it changes.
-     * Useful for building reactive UIs.
-     * 
-     * @param key The DataStore preference key to observe.
-     * @return A Flow emitting the current and subsequent values associated with the key.
+     * Returns a [Flow] emitting the value of [key] whenever preferences change.
      */
     fun <T> observe(key: Preferences.Key<T>): Flow<T?> = dataStore.data
         .catch { exception ->
@@ -71,38 +60,30 @@ class DataStoreController(context: Context) {
         }
 
     /**
-     * Removes the value associated with the [key] from the DataStore.
-     * 
-     * @param key The DataStore preference key to remove.
+     * Removes [key] from DataStore.
      */
     suspend fun <T> remove(key: Preferences.Key<T>) {
         dataStore.edit { it.remove(key) }
     }
 
     /**
-     * Clears all stored preferences in this DataStore.
+     * Clears all stored preferences in DataStore.
      */
     suspend fun clear() {
         dataStore.edit { it.clear() }
     }
 
     /**
-     * Encrypts and saves a string value securely into the DataStore.
-     * 
-     * @param key The DataStore preference key to use for storing the encrypted string.
-     * @param value The plain-text string value to encrypt and save.
-     * @return True if the encryption and save process was successful, false otherwise.
+     * Encrypts and stores [value] under [key]. Aborts cleanly and returns `false` if encryption fails.
      */
     suspend fun saveSecure(key: Preferences.Key<String>, value: String): Boolean {
         val encrypted = EncryptionManager.encrypt(securityAlias, value)
+        if (encrypted.isEmpty()) return false
         return update(key, encrypted)
     }
 
     /**
-     * Retrieves and decrypts a securely saved string value from the DataStore.
-     * 
-     * @param key The DataStore preference key where the encrypted string is stored.
-     * @return The decrypted plain-text string, or null if it doesn't exist or decryption fails.
+     * Retrieves and decrypts the string value stored under [key], or `null` if absent or invalid.
      */
     suspend fun getSecure(key: Preferences.Key<String>): String? {
         val encrypted = get(key) ?: return null
@@ -110,11 +91,7 @@ class DataStoreController(context: Context) {
     }
 
     /**
-     * Returns a [Flow] that emits decrypted string values for a secure key 
-     * whenever the encrypted value changes.
-     * 
-     * @param key The DataStore preference key to observe.
-     * @return A Flow emitting the decrypted plain-text strings associated with the key.
+     * Returns a [Flow] emitting decrypted values for [key] on every preference update.
      */
     fun observeSecure(key: Preferences.Key<String>): Flow<String?> = observe(key)
         .map { encrypted ->

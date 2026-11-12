@@ -34,9 +34,10 @@ enum class EasifyFlashMode {
 }
 
 class CameraState(
-    private val context: Context,
+    context: Context,
     private val lifecycleOwner: LifecycleOwner
 ) {
+    private val appContext = context.applicationContext
     private var camera: Camera? = null
     private var imageCapture: ImageCapture? = null
     private var preview: Preview? = null
@@ -51,9 +52,9 @@ class CameraState(
         private set
 
     internal fun bindCamera(previewView: PreviewView) {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(appContext)
         cameraProviderFuture.addListener({
-            val cameraProvider = cameraProviderFuture.get()
+            val cameraProvider = runCatching { cameraProviderFuture.get() }.getOrNull() ?: return@addListener
 
             val selector = when (lensFacing) {
                 EasifyCameraLens.BACK -> CameraSelector.DEFAULT_BACK_CAMERA
@@ -84,10 +85,9 @@ class CameraState(
                     imageCapture
                 )
                 camera?.cameraControl?.enableTorch(isTorchEnabled)
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } catch (_: Exception) {
             }
-        }, ContextCompat.getMainExecutor(context))
+        }, ContextCompat.getMainExecutor(appContext))
     }
 
     fun toggleLens(previewView: PreviewView) {
@@ -116,20 +116,21 @@ class CameraState(
         camera?.cameraControl?.setLinearZoom(linearZoom.coerceIn(0f, 1f))
     }
 
-    suspend fun takePicture(outputDirectory: File = context.cacheDir): Result<Uri> =
+    suspend fun takePicture(outputDirectory: File = appContext.cacheDir): Result<Uri> =
         suspendCancellableCoroutine { continuation ->
             val capture = imageCapture ?: run {
                 continuation.resume(Result.failure(IllegalStateException("Camera not ready")))
                 return@suspendCancellableCoroutine
             }
 
+            outputDirectory.mkdirs()
             val fileName = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date()) + ".jpg"
             val photoFile = File(outputDirectory, fileName)
             val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
             capture.takePicture(
                 outputOptions,
-                ContextCompat.getMainExecutor(context),
+                ContextCompat.getMainExecutor(appContext),
                 object : ImageCapture.OnImageSavedCallback {
                     override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                         val savedUri = outputFileResults.savedUri ?: Uri.fromFile(photoFile)
@@ -146,9 +147,9 @@ class CameraState(
 
 @Composable
 fun rememberCameraState(): CameraState {
-    val context = LocalContext.current
+    val appContext = LocalContext.current.applicationContext
     val lifecycleOwner = LocalLifecycleOwner.current
-    return remember(context, lifecycleOwner) {
-        CameraState(context, lifecycleOwner)
+    return remember(appContext, lifecycleOwner) {
+        CameraState(appContext, lifecycleOwner)
     }
 }

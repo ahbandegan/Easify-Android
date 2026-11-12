@@ -2,63 +2,73 @@ package ir.amirhesambandegan.easify_storage
 
 import android.content.Context
 import java.io.File
+import java.security.MessageDigest
 
 /**
- * A utility object to handle transient cache storage with Time-To-Live (TTL) expiration rules.
+ * Handles transient cache storage with Time-To-Live (TTL) expiration rules.
+ * Cache keys are hashed with SHA-256 to eliminate path-traversal risks and illegal filename characters.
  */
 object SmartCacheManager {
 
-    /**
-     * Saves a specific string of data to a cache file mapped to the given key, 
-     * associating it with a Time-To-Live (TTL).
-     *
-     * @param context The application context used to access the cache directory.
-     * @param key A unique identifier for this cached data.
-     * @param data The string data to be stored.
-     * @param ttlMillis The Time-To-Live duration in milliseconds.
-     */
-    fun saveWithTTL(context: Context, key: String, data: String, ttlMillis: Long) {
-        val cacheFile = File(context.cacheDir, "$key.cache")
-        val expiryTime = System.currentTimeMillis() + ttlMillis
-        cacheFile.writeText("$expiryTime\n$data")
+    private fun cacheFileFor(context: Context, key: String): File {
+        val digest = MessageDigest.getInstance("SHA-256")
+            .digest(key.toByteArray(Charsets.UTF_8))
+            .joinToString("") { "%02x".format(it) }
+        return File(context.applicationContext.cacheDir, "$digest.cache")
     }
 
     /**
-     * Retrieves cached string data associated with the specified key if it has not yet expired.
-     * If the cache entry is expired, it is automatically deleted.
-     *
-     * @param context The application context used to access the cache directory.
-     * @param key The unique identifier for the cached data to fetch.
-     * @return The cached string data, or null if it doesn't exist or has expired.
+     * Saves string [data] mapped to [key] with an expiration duration of [ttlMillis].
+     */
+    fun saveWithTTL(context: Context, key: String, data: String, ttlMillis: Long) {
+        if (ttlMillis <= 0L) {
+            invalidate(context, key)
+            return
+        }
+        val cacheFile = cacheFileFor(context, key)
+        val expiryTime = System.currentTimeMillis() + ttlMillis
+        cacheFile.writeText("$expiryTime\n$data", Charsets.UTF_8)
+    }
+
+    /**
+     * Retrieves cached data for [key] if present and not expired, automatically removing expired entries.
      */
     fun getOrNull(context: Context, key: String): String? {
-        val cacheFile = File(context.cacheDir, "$key.cache")
-        if (!cacheFile.exists()) return null
-        
-        val lines = cacheFile.readLines()
-        if (lines.isEmpty()) return null
-        
-        val expiryTime = lines.first().toLongOrNull() ?: 0L
-        if (System.currentTimeMillis() > expiryTime) {
-            cacheFile.delete()
-            return null
+        val cacheFile = cacheFileFor(context, key)
+        if (!cacheFile.exists() || !cacheFile.isFile) return null
+
+        return cacheFile.bufferedReader(Charsets.UTF_8).use { reader ->
+            val firstLine = reader.readLine() ?: return null
+            val expiryTime = firstLine.toLongOrNull() ?: 0L
+            if (System.currentTimeMillis() > expiryTime) {
+                reader.close()
+                cacheFile.delete()
+                return null
+            }
+            reader.readText()
         }
-        
-        return lines.drop(1).joinToString("\n")
     }
-    
+
     /**
-     * Sweeps the application's cache directory and proactively deletes any ".cache" 
-     * files that have surpassed their calculated expiration time.
-     *
-     * @param context The application context used to access the cache directory.
+     * Deletes the cached entry for [key], if it exists.
+     */
+    fun invalidate(context: Context, key: String): Boolean {
+        val cacheFile = cacheFileFor(context, key)
+        return !cacheFile.exists() || cacheFile.delete()
+    }
+
+    /**
+     * Sweeps the cache directory and deletes any `.cache` files whose TTL has expired
+     * without loading the full payload into memory.
      */
     fun cleanExpiredCaches(context: Context) {
-        context.cacheDir.listFiles()?.forEach { file ->
-            if (file.name.endsWith(".cache")) {
-                val lines = file.readLines()
-                val expiryTime = lines.firstOrNull()?.toLongOrNull() ?: 0L
-                if (System.currentTimeMillis() > expiryTime) {
+        val now = System.currentTimeMillis()
+        context.applicationContext.cacheDir.listFiles()?.forEach { file ->
+            if (file.isFile && file.name.endsWith(".cache")) {
+                val expiryTime = runCatching {
+                    file.bufferedReader(Charsets.UTF_8).use { it.readLine()?.toLongOrNull() }
+                }.getOrNull() ?: 0L
+                if (now > expiryTime) {
                     file.delete()
                 }
             }

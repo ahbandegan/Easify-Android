@@ -4,28 +4,16 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import androidx.fragment.app.FragmentActivity
+import java.util.Collections
+import java.util.IdentityHashMap
 
 /**
- * General utility extensions for [Context] manipulation and unwrapping.
- */
-
-/**
- * Attempts to recursively unwrap a [ContextWrapper] to find the underlying [Activity].
- * 
- * In Android, a `Context` can often be wrapped multiple times (e.g., `TintContextWrapper`, 
- * `ContextThemeWrapper`). This function drills down through the `.baseContext` chain 
- * until it either finds an instance of [Activity] or runs out of wrappers.
- * 
- * This is particularly useful in Views or Adapters where you are handed a `Context` 
- * and need to perform Activity-specific operations (like showing dialogs, manipulating 
- * the window, or requesting permissions) without resorting to risky forced casts.
- *
- * @return The underlying [Activity] if found in the wrapper chain, or `null` if the context 
- *         is not tied to an Activity (e.g., an Application or Service context).
+ * Recursively unwraps a [ContextWrapper] chain to locate the underlying [Activity] with cycle protection.
  */
 fun Context.findActivity(): Activity? {
-    var currentContext = this
-    while (currentContext is ContextWrapper) {
+    var currentContext: Context? = this
+    val visited = Collections.newSetFromMap(IdentityHashMap<Context, Boolean>())
+    while (currentContext is ContextWrapper && visited.add(currentContext)) {
         if (currentContext is Activity) return currentContext
         currentContext = currentContext.baseContext
     }
@@ -33,18 +21,12 @@ fun Context.findActivity(): Activity? {
 }
 
 /**
- * Attempts to recursively unwrap a [ContextWrapper] to find the underlying [FragmentActivity].
- * 
- * Similar to [findActivity], but specifically targets [FragmentActivity]. This is required 
- * for operations that depend on the AndroidX fragment system, such as using `SupportFragmentManager`,
- * `ViewModelProviders`, or displaying AndroidX `BiometricPrompt` dialogs.
- *
- * @return The underlying [FragmentActivity] if found, or `null` if the context is not 
- *         tied to a FragmentActivity.
+ * Recursively unwraps a [ContextWrapper] chain to locate the underlying [FragmentActivity] with cycle protection.
  */
 fun Context.findFragmentActivity(): FragmentActivity? {
-    var currentContext = this
-    while (currentContext is ContextWrapper) {
+    var currentContext: Context? = this
+    val visited = Collections.newSetFromMap(IdentityHashMap<Context, Boolean>())
+    while (currentContext is ContextWrapper && visited.add(currentContext)) {
         if (currentContext is FragmentActivity) return currentContext
         currentContext = currentContext.baseContext
     }

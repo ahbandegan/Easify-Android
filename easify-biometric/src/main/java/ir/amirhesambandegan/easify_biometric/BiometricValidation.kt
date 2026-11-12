@@ -2,26 +2,23 @@ package ir.amirhesambandegan.easify_biometric
 
 import androidx.biometric.BiometricPrompt
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import ir.amirhesambandegan.easify_context.findFragmentActivity
 
 /**
- * A launcher for biometric authentication.
+ * Launches standard system biometric authentication attached to a [FragmentActivity].
  */
 class BiometricLauncher(
     private val activity: FragmentActivity,
     private val onResult: (BiometricResult) -> Unit
 ) {
     /**
-     * Launches the biometric authentication prompt.
-     *
-     * @param title The title to display in the prompt.
-     * @param subtitle The subtitle to display in the prompt.
-     * @param description The description to display in the prompt.
-     * @param negativeButtonText The text for the negative button (e.g., "Cancel").
+     * Launches the biometric authentication dialog with the specified prompt texts.
      */
     fun launch(
         title: String,
@@ -63,10 +60,8 @@ class BiometricLauncher(
 }
 
 /**
- * Creates and remembers a [BiometricLauncher] to handle biometric authentication.
- *
- * @param onResult Callback invoked with the result of the authentication.
- * @return A [BiometricLauncher] instance.
+ * Remembers a [BiometricLauncher] bound to the nearest [FragmentActivity], always invoking the
+ * latest [onResult] lambda across recompositions.
  */
 @Composable
 fun rememberBiometricLauncher(
@@ -74,10 +69,13 @@ fun rememberBiometricLauncher(
 ): BiometricLauncher? {
     val context = LocalContext.current
     val activity = context.findFragmentActivity()
+    val latestOnResult by rememberUpdatedState(onResult)
 
     return if (activity != null) {
         remember(activity) {
-            BiometricLauncher(activity, onResult)
+            BiometricLauncher(activity) { result ->
+                latestOnResult(result)
+            }
         }
     } else {
         null

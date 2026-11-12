@@ -1,56 +1,80 @@
 package ir.amirhesambandegan.easify_network
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
+import android.net.Network
 import android.net.NetworkCapabilities
-import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.LocalContext
-import kotlinx.coroutines.delay
+import androidx.core.content.ContextCompat
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 /**
- * Analyzes the network for VPN usage and captive portals (e.g., hotel or airport Wi-Fi login screens).
- *
- * Continuously polls the active network's capabilities every 2 seconds and provides the updated
- * [NetworkSecurityStatus] as a Compose [State].
- *
- * @return A [State] holding the latest [NetworkSecurityStatus].
+ * Event-driven Composable observing VPN transport and captive portal status
+ * using [ConnectivityManager] callbacks.
  */
 @Composable
 fun rememberNetworkSecurityStatus(): State<NetworkSecurityStatus> {
-    val context = LocalContext.current
-    return produceState(initialValue = NetworkSecurityStatus(false, false), context) {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        
-        while (true) {
-            var vpnActive = false
-            var captivePortal = false
-            
-            val activeNetwork = connectivityManager.activeNetwork
-            if (activeNetwork != null) {
-                val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
-                if (capabilities != null) {
-                    vpnActive = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
-                    
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        captivePortal = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_CAPTIVE_PORTAL)
+    val appContext = LocalContext.current.applicationContext
+    return produceState(initialValue = NetworkSecurityStatus(false, false), appContext) {
+        val cm = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        fun inspect(capabilities: NetworkCapabilities?): NetworkSecurityStatus {
+            if (capabilities == null) return NetworkSecurityStatus(false, false)
+            return NetworkSecurityStatus(
+                isVpnActive = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN),
+                isCaptivePortal = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_CAPTIVE_PORTAL)
+            )
+        }
+
+        callbackFlow {
+            fun hasNetworkStatePermission(): Boolean =
+                ContextCompat.checkSelfPermission(
+                    appContext,
+                    Manifest.permission.ACCESS_NETWORK_STATE
+                ) == PackageManager.PERMISSION_GRANTED
+
+            if (!hasNetworkStatePermission()) {
+                trySend(NetworkSecurityStatus(false, false))
+                awaitClose {}
+                return@callbackFlow
+            }
+
+            trySend(inspect(cm.activeNetwork?.let { cm.getNetworkCapabilities(it) }))
+
+            val callback = object : ConnectivityManager.NetworkCallback() {
+                override fun onCapabilitiesChanged(
+                    network: Network,
+                    networkCapabilities: NetworkCapabilities
+                ) {
+                    trySend(inspect(networkCapabilities))
+                }
+
+                override fun onLost(network: Network) {
+                    if (!hasNetworkStatePermission()) {
+                        trySend(NetworkSecurityStatus(false, false))
+                        return
                     }
+                    trySend(inspect(cm.activeNetwork?.let { cm.getNetworkCapabilities(it) }))
                 }
             }
-            
-            value = NetworkSecurityStatus(vpnActive, captivePortal)
-            delay(2000) // Poll every 2 seconds
+
+            cm.registerDefaultNetworkCallback(callback)
+            awaitClose { runCatching { cm.unregisterNetworkCallback(callback) } }
         }
+            .distinctUntilChanged()
+            .collect { value = it }
     }
 }
 
 /**
- * Data class holding the security and captive portal state of the current network.
- *
- * @property isVpnActive `true` if the active network uses a VPN transport; `false` otherwise.
- * @property isCaptivePortal `true` if the active network requires user login/portal authentication; `false` otherwise.
+ * Security and captive portal state of the active network.
  */
 data class NetworkSecurityStatus(
     val isVpnActive: Boolean,

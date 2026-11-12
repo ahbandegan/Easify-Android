@@ -1,71 +1,85 @@
 package ir.amirhesambandegan.easify_network
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import androidx.core.content.ContextCompat
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 /**
- * Observes the network connectivity status of the device using Android's [ConnectivityManager].
- *
- * Provides a reactive [Flow] that emits connectivity changes in real time.
- *
- * @constructor Creates a [ConnectivityObserver] instance with the specified Android [context].
- * @param context The [Context] used to retrieve the system [ConnectivityManager].
+ * Observes validated network connectivity status using Android's [ConnectivityManager].
  */
 class ConnectivityObserver(
     context: Context
 ) {
-
-    /**
-     * System [ConnectivityManager] instance for monitoring network state.
-     */
+    private val appContext = context.applicationContext
     private val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     /**
-     * A [Flow] that emits `true` when the device is online and `false` otherwise.
-     *
-     * It emits the initial network state immediately upon collection and emits updates whenever
-     * the network connection becomes available or is lost, filtering out duplicate consecutive emissions.
+     * Emits `true` when the active network has both internet capability and validation.
      */
     val online: Flow<Boolean> = callbackFlow {
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                super.onAvailable(network)
-                trySend(true)
+                trySend(isCurrentlyOnline())
+            }
+
+            override fun onCapabilitiesChanged(
+                network: Network,
+                networkCapabilities: NetworkCapabilities
+            ) {
+                trySend(hasValidatedInternet(networkCapabilities))
             }
 
             override fun onLost(network: Network) {
-                super.onLost(network)
+                trySend(isCurrentlyOnline())
+            }
+
+            override fun onUnavailable() {
                 trySend(false)
             }
         }
 
-        // Emit initial state
-        trySend(isCurrentlyOnline())
+        if (ContextCompat.checkSelfPermission(
+                appContext,
+                Manifest.permission.ACCESS_NETWORK_STATE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            trySend(false)
+            awaitClose {}
+            return@callbackFlow
+        }
 
+        trySend(isCurrentlyOnline())
         connectivityManager.registerDefaultNetworkCallback(callback)
 
         awaitClose {
-            connectivityManager.unregisterNetworkCallback(callback)
+            runCatching { connectivityManager.unregisterNetworkCallback(callback) }
         }
     }.distinctUntilChanged()
 
-    /**
-     * Checks if the device is currently connected to a validated internet network.
-     *
-     * @return `true` if an active network is present with both [NetworkCapabilities.NET_CAPABILITY_INTERNET]
-     * and [NetworkCapabilities.NET_CAPABILITY_VALIDATED] capabilities; `false` otherwise.
-     */
     private fun isCurrentlyOnline(): Boolean {
+        if (ContextCompat.checkSelfPermission(
+                appContext,
+                Manifest.permission.ACCESS_NETWORK_STATE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return false
+        }
         val network = connectivityManager.activeNetwork ?: return false
         val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return hasValidatedInternet(capabilities)
+    }
+
+    private fun hasValidatedInternet(capabilities: NetworkCapabilities): Boolean {
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+            capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
 }

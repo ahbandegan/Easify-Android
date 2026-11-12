@@ -1,58 +1,83 @@
 package ir.amirhesambandegan.easify_biometric
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import androidx.core.content.ContextCompat
 
 /**
- * Utility object for providing haptic feedback during biometric authentication events.
+ * Provides safe haptic feedback during biometric authentication events across Android API levels.
  */
 object BiometricHapticFeedback {
 
     /**
-     * Plays a success haptic vibration to notify the user of successful authentication.
-     * 
-     * @param context The application or activity context used to access the vibrator service.
+     * Plays a crisp success haptic vibration if a vibrator hardware unit is available.
      */
     fun playSuccessVibration(context: Context) {
-        val vibrator = getVibrator(context)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            vibrator?.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
-        } else {
-            vibrator?.vibrate(50)
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.VIBRATE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        val vibrator = getVibrator(context) ?: return
+        if (!vibrator.hasVibrator()) return
+
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+                vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                vibrator.vibrate(VibrationEffect.createOneShot(50L, VibrationEffect.DEFAULT_AMPLITUDE))
+            }
+            else -> {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(50L)
+            }
         }
     }
 
     /**
-     * Plays an error haptic vibration to notify the user of failed authentication.
-     * 
-     * @param context The application or activity context used to access the vibrator service.
+     * Plays a distinct double-pulse error vibration when authentication fails.
      */
     fun playErrorVibration(context: Context) {
-        val vibrator = getVibrator(context)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            vibrator?.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_DOUBLE_CLICK))
-        } else {
-            val pattern = longArrayOf(0, 100, 50, 100)
-            vibrator?.vibrate(pattern, -1)
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.VIBRATE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        val vibrator = getVibrator(context) ?: return
+        if (!vibrator.hasVibrator()) return
+
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+                vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_DOUBLE_CLICK))
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                val pattern = longArrayOf(0L, 100L, 50L, 100L)
+                vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1))
+            }
+            else -> {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(longArrayOf(0L, 100L, 50L, 100L), -1)
+            }
         }
     }
 
-    /**
-     * Retrieves the appropriate [Vibrator] system service based on the current Android SDK version.
-     * 
-     * @param context The context used to fetch the service.
-     * @return The [Vibrator] instance, or null if it cannot be retrieved.
-     */
     private fun getVibrator(context: Context): Vibrator? {
+        val appContext = context.applicationContext
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-            vibratorManager.defaultVibrator
+            (appContext.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager)?.defaultVibrator
         } else {
             @Suppress("DEPRECATION")
-            context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            appContext.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
         }
     }
 }

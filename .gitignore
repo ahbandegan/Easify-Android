@@ -1,4 +1,5 @@
 # Built objects
+.kotlin/
 *.iml
 .gradle
 /local.properties

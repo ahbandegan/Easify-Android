@@ -15,43 +15,35 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import java.util.concurrent.TimeoutException
 
-internal class SmsRetrieverHelper(private val context: Context) {
+internal class SmsRetrieverHelper(context: Context) {
 
-    /**
-     * Starts the SMS Retriever client in Google Play Services.
-     */
+    private val appContext = context.applicationContext
+
     fun startListening(
         onStarted: () -> Unit,
         onFailure: (Throwable) -> Unit
     ) {
-        val client = SmsRetriever.getClient(context)
+        val client = SmsRetriever.getClient(appContext)
         client.startSmsRetriever()
             .addOnSuccessListener { onStarted() }
             .addOnFailureListener { onFailure(it) }
     }
 
-    /**
-     * Starts the SMS User Consent client in Google Play Services.
-     */
     fun startUserConsent(
         senderPhoneNumber: String? = null,
         onStarted: () -> Unit = {},
         onFailure: (Throwable) -> Unit = {}
     ) {
-        val client = SmsRetriever.getClient(context)
+        val client = SmsRetriever.getClient(appContext)
         client.startSmsUserConsent(senderPhoneNumber)
             .addOnSuccessListener { onStarted() }
             .addOnFailureListener { onFailure(it) }
     }
 
-    /**
-     * Listens for incoming SMS via SMS Retriever API, extracts the OTP code within [otpLengthRange],
-     * and emits the result. Automatically registers and unregisters the BroadcastReceiver.
-     */
     fun listenForOtp(
         otpLengthRange: IntRange = 4..8
     ): Flow<AuthResult<String>> = callbackFlow {
-        val client = SmsRetriever.getClient(context)
+        val client = SmsRetriever.getClient(appContext)
         client.startSmsRetriever()
             .addOnFailureListener { e ->
                 trySend(AuthResult.Error(e))
@@ -78,7 +70,7 @@ internal class SmsRetrieverHelper(private val context: Context) {
                             if (otp != null) {
                                 trySend(AuthResult.Success(otp))
                             } else {
-                                trySend(AuthResult.Error(IllegalStateException("No OTP code matched in message: $message")))
+                                trySend(AuthResult.Error(IllegalStateException("No OTP code matched in message.")))
                             }
                         } else {
                             trySend(AuthResult.Error(IllegalStateException("Empty SMS message received")))
@@ -96,29 +88,23 @@ internal class SmsRetrieverHelper(private val context: Context) {
 
         val filter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
         ContextCompat.registerReceiver(
-            context,
+            appContext,
             receiver,
             filter,
+            SmsRetriever.SEND_PERMISSION,
+            null,
             ContextCompat.RECEIVER_EXPORTED
         )
 
         awaitClose {
-            try {
-                context.unregisterReceiver(receiver)
-            } catch (_: Exception) {
-            }
+            runCatching { appContext.unregisterReceiver(receiver) }
         }
     }
 
-    /**
-     * Listens for SMS User Consent intent when an SMS arrives.
-     * Emits the consent [Intent] which can be launched with [androidx.activity.result.ActivityResultLauncher]
-     * to prompt the user to allow reading the SMS.
-     */
     fun listenForUserConsentIntent(
         senderPhoneNumber: String? = null
     ): Flow<AuthResult<Intent>> = callbackFlow {
-        val client = SmsRetriever.getClient(context)
+        val client = SmsRetriever.getClient(appContext)
         client.startSmsUserConsent(senderPhoneNumber)
             .addOnFailureListener { e ->
                 trySend(AuthResult.Error(e))
@@ -161,17 +147,16 @@ internal class SmsRetrieverHelper(private val context: Context) {
 
         val filter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
         ContextCompat.registerReceiver(
-            context,
+            appContext,
             receiver,
             filter,
+            SmsRetriever.SEND_PERMISSION,
+            null,
             ContextCompat.RECEIVER_EXPORTED
         )
 
         awaitClose {
-            try {
-                context.unregisterReceiver(receiver)
-            } catch (_: Exception) {
-            }
+            runCatching { appContext.unregisterReceiver(receiver) }
         }
     }
 }

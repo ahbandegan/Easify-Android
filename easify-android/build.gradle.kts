@@ -24,6 +24,15 @@ android {
 }
 
 dependencies {
+    api(project(":easify-validation"))
+    api(project(":easify-format-core"))
+    api(project(":easify-persian-core"))
+    api(project(":easify-fintech-core"))
+    api(project(":easify-state-core"))
+    api(project(":easify-form-core"))
+    api(project(":easify-network-core"))
+    api(project(":easify-auth-core"))
+    api(project(":easify-location-core"))
     api(project(":easify-biometric"))
     api(project(":easify-bluetooth"))
     api(project(":easify-context"))
@@ -43,7 +52,6 @@ dependencies {
     api(project(":easify-sensor"))
     api(project(":easify-storage"))
     api(project(":easify-ui"))
-    api(project(":easify-validation"))
     api(project(":easify-camera"))
     api(project(":easify-state"))
     api(project(":easify-auth"))
@@ -56,9 +64,8 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.ahbandegan.Easify-Android"
                 artifactId = "easify-android"
-                version = "3.0.0"
+                version = libs.versions.easify.get()
             }
         }
     }
 }
-

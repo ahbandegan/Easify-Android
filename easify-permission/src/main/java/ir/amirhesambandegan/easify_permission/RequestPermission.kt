@@ -1,22 +1,16 @@
 package ir.amirhesambandegan.easify_permission
 
-import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 
 /**
- * A headless Composable effect that requests a single runtime permission automatically on first composition.
- *
- * If the permission is already granted, [onGrant] is invoked immediately.
- * Otherwise, the permission request launcher is displayed and the result invokes [onGrant] or [onDenied].
- *
- * @param permission The runtime permission string to check and request (e.g. `Manifest.permission.CAMERA`).
- * @param onGrant Callback invoked when the permission is granted.
- * @param onDenied Callback invoked when the permission is denied.
+ * Headless Composable effect that requests [permission] automatically whenever [permission] changes
+ * or on initial composition.
  */
 @Composable
 fun RequestPermission(
@@ -25,19 +19,20 @@ fun RequestPermission(
     onDenied: () -> Unit
 ) {
     val context = LocalContext.current
+    val latestOnGrant by rememberUpdatedState(onGrant)
+    val latestOnDenied by rememberUpdatedState(onDenied)
+
     val result = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { res ->
-        if (res)
-            onGrant()
-        else
-            onDenied()
+    ) { granted ->
+        if (granted) latestOnGrant() else latestOnDenied()
     }
 
-    LaunchedEffect(Unit) {
-        if (isGranted(permission, context) == PermissionStats.PERMISSION_GRANTED)
-            onGrant()
-        else
+    LaunchedEffect(permission, context) {
+        if (isGranted(permission, context) == PermissionStats.PERMISSION_GRANTED) {
+            latestOnGrant()
+        } else {
             result.launch(permission)
+        }
     }
 }

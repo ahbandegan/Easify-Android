@@ -1,39 +1,37 @@
 package ir.amirhesambandegan.easify_network
 
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.onDownload
-import io.ktor.client.request.get
-import io.ktor.client.statement.readBytes
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.io.asSink
+import kotlinx.io.buffered
 import java.io.File
 
 /**
- * Downloads a remote file from the specified [url] and writes it to [destFile], emitting download progress.
- *
- * This function returns a cold [Flow] that emits integer progress values ranging from `0` to `100`.
- * If an exception occurs during the download process, `-1` is emitted to signal an error state.
- *
- * @receiver The [HttpClient] instance used to execute the HTTP GET request.
- * @param url The remote URL of the file to be downloaded.
- * @param destFile The destination [File] on local storage where the downloaded bytes will be saved.
- * @return A [Flow] emitting percentage progress values (`0` to `100`), or `-1` on error.
+ * Streams a remote file from [url] directly into [destFile] in chunks without loading the entire
+ * payload into memory, emitting percentage progress values (`0..100`) or `-1` on failure.
  */
 fun HttpClient.downloadFile(url: String, destFile: File): Flow<Int> = flow {
+    var failed = false
     try {
-        val response = get(url) {
-            onDownload { bytesReceived, contentLength ->
-                if (contentLength != null && contentLength > 0) {
-                    val progress = (bytesReceived * 100f / contentLength).toInt()
-                    emit(progress)
-                }
+        destFile.parentFile?.mkdirs()
+        destFile.outputStream().asSink().buffered().use { sink ->
+            downloadToSink(url, sink).collect { progress ->
+                if (progress < 0) failed = true
+                emit(progress)
             }
         }
-        val bytes = response.readBytes()
-        destFile.writeBytes(bytes)
-        emit(100)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        emit(-1) // Error state
+        if (failed && destFile.exists()) {
+            destFile.delete()
+        }
+    } catch (e: CancellationException) {
+        if (destFile.exists()) destFile.delete()
+        throw e
+    } catch (_: Exception) {
+        if (destFile.exists()) destFile.delete()
+        emit(-1)
     }
-}
+}.flowOn(Dispatchers.IO)

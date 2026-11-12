@@ -1,46 +1,46 @@
+@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.kmp.library)
     id("maven-publish")
 }
 
-android {
-    namespace = "ir.amirhesambandegan.easify_validation"
-    compileSdk = 37
+group = "com.github.ahbandegan.Easify-Android"
+version = libs.versions.easify.get()
 
-    defaultConfig {
+kotlin {
+    jvmToolchain(17)
+    withSourcesJar(publish = true)
+
+    jvm()
+
+    android {
+        namespace = "ir.amirhesambandegan.easify_validation"
+        compileSdk = 37
         minSdk = 24
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        withHostTest {}
     }
-    
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
+
+    iosArm64()
+    iosSimulatorArm64()
+    iosX64()
+    macosArm64()
+    linuxX64()
+    mingwX64()
+
+    js {
+        browser()
+        nodejs()
+    }
+    wasmJs {
+        browser()
+        nodejs()
+    }
+
+    sourceSets {
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
         }
     }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
 }
-
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("release") {
-                from(components["release"])
-                groupId = "com.github.ahbandegan.Easify-Android"
-                artifactId = "easify-validation"
-                version = "3.0.0"
-            }
-        }
-    }
-}
-
-dependencies {
-    api(libs.androidx.core.ktx)
-    api(libs.kotlinx.coroutines.android)
-    api(libs.kotlinx.coroutines.core)
-}
-
-

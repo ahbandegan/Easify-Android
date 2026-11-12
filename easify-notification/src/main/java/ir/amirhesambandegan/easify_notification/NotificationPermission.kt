@@ -1,26 +1,36 @@
 package ir.amirhesambandegan.easify_notification
 
 import android.Manifest
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 
 /**
- * Remembers and provides the state and control callbacks for handling Android notification permissions in Jetpack Compose.
- * Handles Android 13+ (API 33, Tiramisu) POST_NOTIFICATIONS permission requests automatically.
- *
- * @return A [NotificationPermissionState] instance holding the current permission status and action handlers.
+ * Remembers and manages Android 13+ (`POST_NOTIFICATIONS`) permission state in Compose,
+ * automatically refreshing grant status whenever the screen resumes from system settings.
  */
 @Composable
 fun rememberNotificationPermission(): NotificationPermissionState {
     val context = LocalContext.current
-    var isGranted by remember { mutableStateOf(checkPermission(context)) }
+    val appContext = context.applicationContext
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var isGranted by remember(appContext) { mutableStateOf(checkNotificationPermission(appContext)) }
 
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -28,7 +38,19 @@ fun rememberNotificationPermission(): NotificationPermissionState {
         isGranted = granted
     }
 
-    return remember {
+    DisposableEffect(lifecycleOwner, appContext) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                isGranted = checkNotificationPermission(appContext)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    return remember(isGranted, appContext, launcher) {
         NotificationPermissionState(
             isGranted = isGranted,
             requestPermission = {
@@ -40,34 +62,34 @@ fun rememberNotificationPermission(): NotificationPermissionState {
             },
             openSettings = {
                 val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-                    putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                    putExtra(Settings.EXTRA_APP_PACKAGE, appContext.packageName)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
-                context.startActivity(intent)
+                try {
+                    appContext.startActivity(intent)
+                } catch (_: ActivityNotFoundException) {
+                    runCatching {
+                        appContext.startActivity(
+                            Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        )
+                    }
+                }
             }
         )
     }
 }
 
-/**
- * Checks whether the POST_NOTIFICATIONS permission is granted on the current device.
- *
- * @param context The [Context] used to check the permission status.
- * @return `true` if permission is granted or not required (pre-Android 13), `false` otherwise.
- */
-private fun checkPermission(context: Context): Boolean {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        return context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == android.content.pm.PackageManager.PERMISSION_GRANTED
+private fun checkNotificationPermission(context: Context): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    } else {
+        true
     }
-    return true
 }
 
-/**
- * Represents the state and actions for managing notification permissions.
- *
- * @property isGranted Indicates whether notification permission is currently granted.
- * @property requestPermission Action to request the notification permission from the user.
- * @property openSettings Action to open the application's notification settings screen.
- */
 class NotificationPermissionState(
     val isGranted: Boolean,
     val requestPermission: () -> Unit,

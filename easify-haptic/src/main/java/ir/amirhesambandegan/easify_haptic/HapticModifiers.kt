@@ -6,56 +6,87 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material3.ripple
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.PointerEvent
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.SuspendingPointerInputModifierNode
+import androidx.compose.ui.node.CompositionLocalConsumerModifierNode
+import androidx.compose.ui.node.DelegatingNode
+import androidx.compose.ui.node.ModifierNodeElement
+import androidx.compose.ui.node.PointerInputModifierNode
+import androidx.compose.ui.node.currentValueOf
+import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.IntSize
 
 /**
- * Replaces the standard clickable. Provides a light impact on down, and medium on up.
- *
- * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this modifier.
- * @param onClick The callback to be invoked when the click action is completed.
- * @return A [Modifier] with the applied haptic clickable behavior.
+ * Clickable modifier with automatic tactile feedback (light impact on press down, medium on release),
+ * built using modern [Modifier.Node] architecture without `Modifier.composed`.
  */
 fun Modifier.hapticClickable(
     interactionSource: MutableInteractionSource? = null,
+    enabled: Boolean = true,
     onClick: () -> Unit
-): Modifier = composed {
-    val context = LocalContext.current
-    val actualInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
-    
-    this
-        .pointerInput(Unit) {
+): Modifier = this
+    .then(HapticPressElement(triggerOnRelease = true, enabled = enabled))
+    .clickable(
+        interactionSource = interactionSource,
+        indication = ripple(),
+        enabled = enabled,
+        onClick = onClick
+    )
+
+/**
+ * Adds a light tactile press cue on touch down without overriding existing click handlers.
+ * Built with [Modifier.Node] for zero per-composition overhead.
+ */
+fun Modifier.hapticPressIndicator(enabled: Boolean = true): Modifier =
+    this then HapticPressElement(triggerOnRelease = false, enabled = enabled)
+
+private data class HapticPressElement(
+    val triggerOnRelease: Boolean,
+    val enabled: Boolean
+) : ModifierNodeElement<HapticPressNode>() {
+    override fun create(): HapticPressNode = HapticPressNode(triggerOnRelease, enabled)
+    override fun update(node: HapticPressNode) {
+        node.triggerOnRelease = triggerOnRelease
+        node.enabled = enabled
+    }
+
+    override fun InspectorInfo.inspectableProperties() {
+        name = if (triggerOnRelease) "hapticClickable" else "hapticPressIndicator"
+        properties["triggerOnRelease"] = triggerOnRelease
+        properties["enabled"] = enabled
+    }
+}
+
+private class HapticPressNode(
+    var triggerOnRelease: Boolean,
+    var enabled: Boolean
+) : DelegatingNode(), PointerInputModifierNode, CompositionLocalConsumerModifierNode {
+
+    private val pointerInputNode = delegate(
+        SuspendingPointerInputModifierNode {
             awaitEachGesture {
                 awaitFirstDown(requireUnconsumed = false)
-                context.hapticImpactLight() // Press down
-                
-                val up = waitForUpOrCancellation()
-                if (up != null) {
-                    context.hapticImpactMedium() // Release
+                if (!enabled) return@awaitEachGesture
+                val context = currentValueOf(LocalContext)
+                context.hapticImpactLight()
+                if (triggerOnRelease) {
+                    val up = waitForUpOrCancellation()
+                    if (up != null) {
+                        context.hapticImpactMedium()
+                    }
                 }
             }
         }
-        .clickable(
-            interactionSource = actualInteractionSource,
-            indication = ripple(),
-            onClick = onClick
-        )
-}
+    )
 
-/**
- * Just adds tactile press indication without overriding the click behavior.
- *
- * @return A [Modifier] that triggers a light haptic impact on press.
- */
-fun Modifier.hapticPressIndicator(): Modifier = composed {
-    val context = LocalContext.current
-    this.pointerInput(Unit) {
-        awaitEachGesture {
-            awaitFirstDown(requireUnconsumed = false)
-            context.hapticImpactLight()
-        }
-    }
+    override fun onPointerEvent(
+        pointerEvent: PointerEvent,
+        pass: PointerEventPass,
+        bounds: IntSize
+    ) = pointerInputNode.onPointerEvent(pointerEvent, pass, bounds)
+
+    override fun onCancelPointerInput() = pointerInputNode.onCancelPointerInput()
 }

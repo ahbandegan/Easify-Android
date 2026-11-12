@@ -1,8 +1,12 @@
 package ir.amirhesambandegan.easify_notification
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 
 /**
  * Helper class for managing and updating progress notifications, supporting determinate and indeterminate states.
@@ -74,10 +78,17 @@ class ProgressNotification(
      * Posts or updates the notification using [NotificationManagerCompat], handling potential security exceptions safely.
      */
     private fun notifyManager() {
-        try {
-            manager.notify(notificationId, builder.build())
-        } catch (e: SecurityException) {
-            e.printStackTrace()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            try {
+                manager.notify(notificationId, builder.build())
+            } catch (e: SecurityException) {
+                e.printStackTrace()
+            }
         }
     }
 }

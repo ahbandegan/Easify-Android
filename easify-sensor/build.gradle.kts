@@ -12,7 +12,7 @@ android {
         minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    
+
     publishing {
         singleVariant("release") {
             withSourcesJar()
@@ -36,7 +36,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.ahbandegan.Easify-Android"
                 artifactId = "easify-sensor"
-                version = "3.0.0"
+                version = libs.versions.easify.get()
             }
         }
     }
@@ -50,7 +50,4 @@ dependencies {
     api(libs.androidx.core.ktx)
     api(libs.kotlinx.coroutines.android)
     api(libs.kotlinx.coroutines.core)
-
 }
-
-

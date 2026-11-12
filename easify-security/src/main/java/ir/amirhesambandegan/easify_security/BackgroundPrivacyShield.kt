@@ -1,43 +1,54 @@
 package ir.amirhesambandegan.easify_security
 
-import android.view.WindowManager
+import android.view.Window
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import ir.amirhesambandegan.easify_context.findActivity
 
 /**
- * Blurs or blanks out the app screen when sent to the recent apps list (multi-tasking view).
- * It achieves this by dynamically adding the [WindowManager.LayoutParams.FLAG_SECURE] flag 
- * to the window when the application is paused, and clearing it when resumed.
+ * Hides sensitive app snapshots in the Android recent-apps switcher by acquiring [FLAG_SECURE]
+ * when paused and releasing it when resumed, cooperating safely with [ScreenShield].
  */
 @Composable
 fun BackgroundPrivacyShield() {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            val activity = context.findActivity() ?: return@LifecycleEventObserver
-            val window = activity.window
+    DisposableEffect(lifecycleOwner, context) {
+        var window: Window? = context.findActivity()?.window
+        var heldByBackgroundShield = false
 
+        val observer = LifecycleEventObserver { _, event ->
+            val currentWindow = context.findActivity()?.window ?: window
+            window = currentWindow
             when (event) {
                 Lifecycle.Event.ON_PAUSE -> {
-                    window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                    if (!heldByBackgroundShield) {
+                        WindowSecureFlagTracker.acquire(currentWindow)
+                        heldByBackgroundShield = true
+                    }
                 }
                 Lifecycle.Event.ON_RESUME -> {
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                    if (heldByBackgroundShield) {
+                        WindowSecureFlagTracker.release(currentWindow)
+                        heldByBackgroundShield = false
+                    }
                 }
-                else -> {}
+                else -> Unit
             }
         }
 
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+            if (heldByBackgroundShield) {
+                WindowSecureFlagTracker.release(window)
+                heldByBackgroundShield = false
+            }
         }
     }
 }

@@ -36,7 +36,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.ahbandegan.Easify-Android"
                 artifactId = "easify-camera"
-                version = "3.0.0"
+                version = libs.versions.easify.get()
             }
         }
     }
@@ -62,5 +62,3 @@ dependencies {
 
     api(libs.barcode.scanning)
 }
-
-

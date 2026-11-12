@@ -1,11 +1,15 @@
 package ir.amirhesambandegan.easify_notification
 
+import android.Manifest
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
+import androidx.core.content.ContextCompat
 
 /**
  * Utility object for displaying notifications with inline direct reply capability using [RemoteInput].
@@ -65,10 +69,17 @@ object DirectReplyNotification {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
         val manager = NotificationManagerCompat.from(context)
-        try {
-            manager.notify(notificationId, builder.build())
-        } catch (e: SecurityException) {
-            e.printStackTrace()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            try {
+                manager.notify(notificationId, builder.build())
+            } catch (e: SecurityException) {
+                e.printStackTrace()
+            }
         }
     }
 }

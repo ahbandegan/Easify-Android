@@ -36,13 +36,14 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.ahbandegan.Easify-Android"
                 artifactId = "easify-location"
-                version = "3.0.0"
+                version = libs.versions.easify.get()
             }
         }
     }
 }
 
 dependencies {
+    api(project(":easify-location-core"))
     api(platform(libs.androidx.compose.bom))
     api(libs.androidx.compose.ui)
     api(libs.androidx.compose.material3)

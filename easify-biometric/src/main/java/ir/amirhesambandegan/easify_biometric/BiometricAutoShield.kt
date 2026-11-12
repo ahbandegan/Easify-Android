@@ -4,35 +4,44 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.disabled
+import androidx.compose.ui.semantics.semantics
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 
 /**
- * A Composable that automatically shields the content and requests biometric authentication
- * when the app comes to the foreground (ON_RESUME), unless a grace period is active.
- *
- * @param isUnlocked Whether the content is currently unlocked.
- * @param onUnlockRequest Callback invoked to request an unlock (e.g., show biometric prompt).
- * @param content The actual content to display when unlocked or in the background.
+ * Automatically shields the wrapped content and triggers [onUnlockRequest] when returning to
+ * foreground (`ON_RESUME`) while locked, unless within [GracePeriodManager].
+ * When locked, all touch/pointer input to underlying composables is strictly intercepted.
  */
 @Composable
 fun BiometricAutoShield(
     isUnlocked: Boolean,
     onUnlockRequest: () -> Unit,
+    lockedOverlay: @Composable () -> Unit = {
+        Text(text = "App Locked", color = Color.White)
+    },
     content: @Composable () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
+    val latestIsUnlocked by rememberUpdatedState(isUnlocked)
+    val latestOnUnlockRequest by rememberUpdatedState(onUnlockRequest)
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME && !isUnlocked) {
+            if (event == Lifecycle.Event.ON_RESUME && !latestIsUnlocked) {
                 if (!GracePeriodManager.isGracePeriodActive()) {
-                    onUnlockRequest()
+                    latestOnUnlockRequest()
                 }
             }
         }
@@ -48,10 +57,19 @@ fun BiometricAutoShield(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.9f)),
+                    .background(Color.Black.copy(alpha = 0.92f))
+                    .semantics(mergeDescendants = true) { disabled() }
+                    .pointerInput(Unit) {
+                        awaitPointerEventScope {
+                            while (true) {
+                                val event = awaitPointerEvent(PointerEventPass.Initial)
+                                event.changes.forEach { it.consume() }
+                            }
+                        }
+                    },
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "App Locked", color = Color.White)
+                lockedOverlay()
             }
         }
     }
