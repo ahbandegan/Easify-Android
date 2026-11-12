@@ -22,7 +22,7 @@ Starting with **v3.1.0**, the library is organized into **32 independent modules
 - **8 Compose Multiplatform UI Modules:** `easify-ui`, `easify-state`, `easify-form`, `easify-format`, `easify-persian`, `easify-fintech`, `easify-lifecycle`, `easify-image`
 - **`SuspendButton` Customization:** Added `shape: Shape? = null`, `colors: ButtonColors? = null`, and `contentPadding: PaddingValues` plus single-flight concurrency protection
 - **Security Hardening:** Replaced deprecated `security-crypto` with **Google Tink (`1.24.0`)** AEAD (`AES256_SIV` + `AES256_GCM`) in `easify-security` and **Streaming AEAD (`AES256_GCM_HKDF_4KB`)** in `easify-storage`; constant-time OAuth `state` verification in `easify-auth-core`; ZIP-slip protection & sanitized filenames in `easify-file`/`easify-network`; safe HTTPS `openBrowser` validation
-- **Modern Stack & Performance:** Kotlin `2.4.21`, AGP `9.5.0` (`compileSdk = 37`), Gradle `9.9.1`, Compose Multiplatform `1.12.2`, Ktor `3.6.1`, Coroutines `1.11.0`, Jetpack Compose BOM `2026.11.00`, `Modifier.Node` custom modifiers, and cancellation-safe structured concurrency
+- **Modern Stack & Performance:** Kotlin `2.4.21`, AGP `9.5.0` (`compileSdk = 37`), Gradle `9.9.1`, Compose Multiplatform `1.12.2`, Ktor `3.6.1`, Coroutines `1.11.0`, Jetpack Compose BOM `2026.09.00`, `Modifier.Node` custom modifiers, and cancellation-safe structured concurrency
 
 ---
 
